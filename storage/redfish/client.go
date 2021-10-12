@@ -14,6 +14,7 @@ type APIClient struct {
 	Pass       string
 	HTTPClient *http.Client
 	URL        string
+	Host       string
 }
 
 // Get ....
@@ -59,5 +60,6 @@ func NewAPIClient(c *http.Client) *APIClient {
 		Pass:       "calvin",
 		HTTPClient: c,
 		URL:        "",
+		Host:       "",
 	}
 }
