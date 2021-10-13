@@ -1,32 +1,37 @@
-package dell
+package hpe
 
-import (
-	"encoding/json"
-	"fmt"
-	"strings"
-
-	"github.com/alochym01/hardware-exporter/domain/server/base"
-	"github.com/alochym01/hardware-exporter/storage/redfish"
-	"github.com/prometheus/client_golang/prometheus"
-)
+import "github.com/alochym01/hardware-exporter/domain/server/base"
 
 type Chassis struct {
-	base.Meta
 	base.Chassis
-	Actions          ChassisActions
-	Assembly         base.Link
-	Description      string `json:"Description"`
-	Links            ChassisLinks
-	Location         ChassisLocation
-	Oem              ChassisOEM
-	PCIeSlots        base.Link
-	PartNumber       string `json:"PartNumber"`
-	PhysicalSecurity ChassisPhysicalSecurity
-	Sensors          base.Link
-	Status           ChassisStatus
-	UUID             string `json:"UUID"`
+	Links     base.ChassisLinks
+	ODataEtag string `json:"@odata.etag"` // HPE
+	// Actions          ChassisActions // DELL
+	// Assembly         Link // DELL
+	// AssetTag    string `json:"AssetTag"`
+	// ChassisType string `json:"ChassisType"`
+	// Description      string `json:"Description"` // DELL
+	// Id           string `json:"Id"`
+	// IndicatorLED string `json:"IndicatorLED"`
+	// Links        base.ChassisLinks
+	// Location         ChassisLocation // DELL
+	// Manufacturer    string `json:"Manufacturer"`
+	// Model           string `json:"Model"`
+	// Name            string `json:"Name"`
+	// NetworkAdapters base.Link
+	Oem ChassisOEM
+	// PartNumber       string `json:"PartNumber"` // DELL
+	// PhysicalSecurity ChassisPhysicalSecurity // DELL
+	// Power        base.Link
+	// PowerState   string `json:"PowerState"`
+	// SKU          string `json:"SKU"`
+	// SerialNumber string `json:"SerialNumber"`
+	// Status       base.Status
+	// Thermal      base.Link
+	// UUID             string `json:"UUID"` // DELL
 }
 
+/*
 // Describe a description of metrics
 func (s Chassis) Describe(ch chan<- *prometheus.Desc) {
 	ch <- ChasState
@@ -163,7 +168,7 @@ func (s Chassis) Collect(ch chan<- prometheus.Metric) {
 	// 	fmt.Println(sys[i].UUID)
 	// }
 }
-
+*/
 func (c Chassis) StatusToNumber() float64 {
 	switch c.Status.Health {
 	case "OK":

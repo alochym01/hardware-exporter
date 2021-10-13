@@ -1,8 +1,6 @@
 package dell
 
-type Link struct {
-	ODataID string `json:"@odata.id"`
-}
+import "github.com/alochym01/hardware-exporter/domain/server/base"
 
 // ChassisActions start
 type ChassisActions struct {
@@ -18,23 +16,24 @@ type ChassisActionsChassisReset struct {
 
 // ChassisLinks start
 type ChassisLinks struct {
-	ComputerSystems             []Link `json:"ComputerSystems"`
-	ComputerSystemsOdataCount   int    `json:"ComputerSystems@odata.count"`
-	Contains                    []Link `json:"Contains"`
-	ContainsOdataCount          int    `json:"Contains@odata.count"`
-	CooledBy                    []Link
+	base.ChassisLinks
+	ComputerSystemsOdataCount   int         `json:"ComputerSystems@odata.count"`
+	Contains                    []base.Link `json:"Contains"`
+	ContainsOdataCount          int         `json:"Contains@odata.count"`
+	CooledBy                    []base.Link
 	CooledByOdataCount          int      `json:"CooledBy@odata.count"`
 	Drives                      []string `json:"Drives"`
 	DrivesOdataCount            int      `json:"Drives@odata.count"`
-	ManagedBy                   []Link
-	ManagedByOdataCount         int `json:"ManagedBy@odata.count"`
-	ManagersInChassis           []Link
+	ManagedByOdataCount         int      `json:"ManagedBy@odata.count"`
+	ManagersInChassis           []base.Link
 	ManagersInChassisOdataCount int `json:"ManagersInChassis@odata.count"`
-	PCIeDevices                 []Link
+	PCIeDevices                 []base.Link
 	PCIeDevicesOdataCount       int `json:"PCIeDevices@odata.count"`
-	PoweredBy                   []Link
+	Processors                  []base.Link
+	ProcessorsOdataCount        int `json:"Processors@odata.count"`
+	PoweredBy                   []base.Link
 	PoweredByOdataCount         int `json:"PoweredBy@odata.count"`
-	Storage                     []Link
+	Storage                     []base.Link
 	StorageOdataCount           int `json:"Storage@odata.count"`
 }
 
@@ -65,16 +64,14 @@ type ChassisOEMDell struct {
 }
 
 type ChassisOEMDellDellChassis struct {
-	ODataContext string `json:"@odata.context"`
-	ODataID      string `json:"@odata.id"`
-	ODataType    string `json:"@odata.type"`
-	CanBeFRUed   bool   `json:"CanBeFRUed"`
-	Links        ChassisOEMDellDellChassisLinks
-	SystemID     int `json:"SystemID"`
+	base.Meta
+	CanBeFRUed bool `json:"CanBeFRUed"`
+	Links      ChassisOEMDellDellChassisLinks
+	SystemID   int `json:"SystemID"`
 }
 
 type ChassisOEMDellDellChassisLinks struct {
-	ComputerSystem Link
+	ComputerSystem base.Link
 }
 
 // ChassisOEM end
@@ -85,7 +82,6 @@ type ChassisPhysicalSecurity struct {
 	IntrusionSensorReArm  string `json:"IntrusionSensorReArm"`
 }
 type ChassisStatus struct {
-	Health       string `json:"Health"`
+	base.Status
 	HealthRollup string `json:"HealthRollup"`
-	State        string `json:"State"`
 }
