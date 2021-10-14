@@ -96,3 +96,44 @@ type ChassisOEMHpeSystemMaintenanceSwitches struct {
 }
 
 // ChassisOEM end
+
+// Systems
+// SystemsTrustedModules start
+type SystemsTrustedModulesOEMHPE struct {
+	ODataContext string `json:"@odata.context"`
+	ODataType    string `json:"@odata.type"`
+}
+type SystemsTrustedModulesOEM struct {
+	HPE SystemsTrustedModulesOEMHPE
+}
+
+type SystemsTrustedModules struct {
+	OEM    SystemsTrustedModulesOEM
+	Status base.StateStatus
+}
+
+// SystemsTrustedModules end
+
+type SystemsProcessorSummary struct {
+	Count  string `json:"Count"`
+	Model  string `json:"Model"`
+	Status base.HealthRollupStatus
+}
+
+type SystemsOem struct {
+	// TODO take time to parse
+}
+
+type SystemsMemorySummary struct {
+	Status                         base.HealthRollupStatus
+	TotalSystemMemoryGiB           int `json:"TotalSystemMemoryGiB"`
+	TotalSystemPersistentMemoryGiB int `json:"TotalSystemPersistentMemoryGiB"`
+}
+
+type SystemsLinks struct {
+	Chassis   []base.Link
+	ManagedBy []base.Link
+}
+
+type SystemsBoot struct {
+}

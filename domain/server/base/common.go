@@ -3,6 +3,17 @@ package base
 type Link struct {
 	ODataID string `json:"@odata.id"`
 }
+
+type ComputerSystemReset struct {
+	ResetType []string `json:"ResetType@Redfish.AllowableValues"`
+	Target    string   `json:"Target"`
+}
+type Action struct {
+	ComputerSystem ComputerSystemReset `json:"#ComputerSystem.Reset"`
+}
+type Actions struct {
+	Actions Action `json:"Actions"`
+}
 type Meta struct {
 	ODataContext string `json:"@odata.context"`
 	ODataID      string `json:"@odata.id"`
@@ -10,11 +21,10 @@ type Meta struct {
 }
 type Chassis struct {
 	Meta
-	AssetTag     string `json:"AssetTag"`
-	ChassisType  string `json:"ChassisType"`
-	Id           string `json:"Id"`
-	IndicatorLED string `json:"IndicatorLED"`
-	// Links           ChassisLinks
+	AssetTag        string `json:"AssetTag"`
+	ChassisType     string `json:"ChassisType"`
+	Id              string `json:"Id"`
+	IndicatorLED    string `json:"IndicatorLED"`
 	Manufacturer    string `json:"Manufacturer"`
 	Model           string `json:"Model"`
 	Name            string `json:"Name"`
@@ -44,7 +54,18 @@ type ChassisLinks struct {
 
 // ChassisLinks end
 
-type Status struct {
+type HealthStatus struct {
 	Health string `json:"Health"`
-	State  string `json:"State"`
+}
+type Status struct {
+	HealthStatus
+	StateStatus
+	HealthRollupStatus
+}
+type StateStatus struct {
+	State string `json:"State"`
+}
+
+type HealthRollupStatus struct {
+	HealthRollup string `json:"HealthRollup"`
 }

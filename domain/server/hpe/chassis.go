@@ -6,29 +6,7 @@ type Chassis struct {
 	base.Chassis
 	Links     base.ChassisLinks
 	ODataEtag string `json:"@odata.etag"` // HPE
-	// Actions          ChassisActions // DELL
-	// Assembly         Link // DELL
-	// AssetTag    string `json:"AssetTag"`
-	// ChassisType string `json:"ChassisType"`
-	// Description      string `json:"Description"` // DELL
-	// Id           string `json:"Id"`
-	// IndicatorLED string `json:"IndicatorLED"`
-	// Links        base.ChassisLinks
-	// Location         ChassisLocation // DELL
-	// Manufacturer    string `json:"Manufacturer"`
-	// Model           string `json:"Model"`
-	// Name            string `json:"Name"`
-	// NetworkAdapters base.Link
-	Oem ChassisOEM
-	// PartNumber       string `json:"PartNumber"` // DELL
-	// PhysicalSecurity ChassisPhysicalSecurity // DELL
-	// Power        base.Link
-	// PowerState   string `json:"PowerState"`
-	// SKU          string `json:"SKU"`
-	// SerialNumber string `json:"SerialNumber"`
-	// Status       base.Status
-	// Thermal      base.Link
-	// UUID             string `json:"UUID"` // DELL
+	Oem       ChassisOEM
 }
 
 /*

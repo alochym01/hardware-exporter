@@ -13,7 +13,7 @@ import (
 type Chassis struct {
 	base.Meta
 	base.Chassis
-	Actions          ChassisActions
+	base.Actions
 	Assembly         base.Link
 	Description      string `json:"Description"`
 	Links            ChassisLinks
@@ -114,6 +114,7 @@ func (s Chassis) Collect(ch chan<- prometheus.Metric) {
 	}
 	for _, v := range chasCollection.Members {
 		if strings.Contains(v.ODataID, "System") {
+			// Set a chassis url
 			redfish.Client.URL = fmt.Sprintf("%s%s", redfish.Client.Host, v.ODataID)
 			data, err := redfish.Client.Get()
 			// Problem connect to server
@@ -151,6 +152,7 @@ func (s Chassis) Collect(ch chan<- prometheus.Metric) {
 			}
 		}
 	}
+	// Everything is ok
 	ch <- prometheus.MustNewConstMetric(
 		ChasState,
 		prometheus.GaugeValue,
@@ -159,9 +161,6 @@ func (s Chassis) Collect(ch chan<- prometheus.Metric) {
 		chas.SKU,
 		chas.SerialNumber,
 	)
-	// for i := range sys {
-	// 	fmt.Println(sys[i].UUID)
-	// }
 }
 
 func (c Chassis) StatusToNumber() float64 {
@@ -177,7 +176,7 @@ func (c Chassis) StatusToNumber() float64 {
 	}
 }
 
-// NewMetrics return a DellHandler struct
+// NewMetrics return a Chassis struct
 func NewMetrics() Chassis {
 	return Chassis{}
 }
