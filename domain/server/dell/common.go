@@ -251,8 +251,36 @@ type SystemsMemorySummary struct {
 }
 
 type SysStorageCollectionMembers struct {
-
 }
+
+type SystemsStorageControllers struct {
+}
+
+type SystemsStorageOEM struct {
+}
+
+type SystemsStorageLinks struct {
+}
+
+// SystemsStorageDisk start
+type SystemsStorageDiskAction struct {
+}
+type SystemsStorageDiskIdentifiers struct {
+}
+type SystemsStorageDiskLinks struct {
+}
+type SystemsStorageDiskOEM struct {
+}
+type SystemsStorageDiskPhysicalLocation struct {
+	PartLocation SystemsStorageDiskPhysicalLocationPartLocation
+}
+type SystemsStorageDiskPhysicalLocationPartLocation struct {
+	LocationOrdinalValue int    `json:"LocationOrdinalValue"`
+	LocationType         string `json:"LocationType"`
+}
+
+// SystemsStorageDisk end
+
 // Chassis Start
 type ChasPowerControlPowerLimit struct {
 	CorrectionInMs int    `json:"CorrectionInMs"`
