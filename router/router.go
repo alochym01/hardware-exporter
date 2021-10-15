@@ -27,7 +27,7 @@ func Router(ginMode string) *gin.Engine {
 	}
 
 	// Init APIClient config
-	redfish.Client = *redfish.NewAPIClient(
+	redfish.Client = redfish.NewAPIClient(
 		&http.Client{
 			Transport: transport,
 			Timeout:   time.Duration(10) * time.Second,

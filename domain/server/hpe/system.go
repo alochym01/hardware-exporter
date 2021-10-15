@@ -2,6 +2,14 @@ package hpe
 
 import "github.com/alochym01/hardware-exporter/domain/server/base"
 
+type SystemsCollection struct {
+	// base.Meta
+	// Description       string `json:"Description"`
+	// Members           []base.Link
+	// MembersOdataCount int    `json:"Members@odata.count"`
+	// Name              string `json:"Name"`
+}
+
 type Systems struct {
 	base.Meta
 	ODataEtag string `json:"@odata.etag"` // HPE
@@ -35,4 +43,17 @@ type Systems struct {
 	SystemType         string `json:"SystemType"`
 	TrustedModules     []SystemsTrustedModules
 	UUID               string `json:"UUID"`
+}
+
+func (s Systems) StatusToNumber() float64 {
+	switch s.Status.Health {
+	case "OK":
+		return 0.0
+	case "Warning":
+		return 1.0
+	case "Critical":
+		return 2.0
+	default:
+		return 3.0
+	}
 }

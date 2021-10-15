@@ -78,9 +78,9 @@ type SystemTrustedModules struct {
 }
 
 type SystemsProcessorSummary struct {
-	Count                 int `json:"Count"`
-	LogicalProcessorCount int `json:"LogicalProcessorCount"`
-	Model                 int `json:"Model"`
+	Count                 int    `json:"Count"`
+	LogicalProcessorCount int    `json:"LogicalProcessorCount"`
+	Model                 string `json:"Model"`
 	Status                base.Status
 }
 
@@ -247,5 +247,84 @@ type SystemsBoot struct {
 type SystemsMemorySummary struct {
 	MemoryMirroring      string `json:"MemoryMirroring"`
 	Status               base.Status
-	TotalSystemMemoryGiB int `json:"TotalSystemMemoryGiB"`
+	TotalSystemMemoryGiB float64 `json:"TotalSystemMemoryGiB"`
+}
+
+type SysStorageCollectionMembers struct {
+
+}
+// Chassis Start
+type ChasPowerControlPowerLimit struct {
+	CorrectionInMs int    `json:"CorrectionInMs"`
+	LimitException string `json:"LimitException"`
+	LimitInWatts   int    `json:"LimitInWatts"`
+}
+type ChasPowerControlPowerMetrics struct {
+	AverageConsumedWatts int `json:"AverageConsumedWatts"`
+	IntervalInMin        int `json:"IntervalInMin"`
+	MaxConsumedWatts     int `json:"MaxConsumedWatts"`
+	MinConsumedWatts     int `json:"MinConsumedWatts"`
+}
+type ChasPowerControl struct {
+	base.Meta
+	MemberId            int `json:"MemberId"`
+	Name                int `json:"Name"`
+	PowerAllocatedWatts int `json:"PowerAllocatedWatts"`
+	PowerAvailableWatts int `json:"PowerAvailableWatts"`
+	PowerCapacityWatts  int `json:"PowerCapacityWatts"`
+	PowerConsumedWatts  int `json:"PowerConsumedWatts"`
+	PowerLimit          ChasPowerControlPowerLimit
+	PowerMetrics        ChasPowerControlPowerMetrics
+	PowerRequestedWatts int `json:"PowerRequestedWatts"`
+	RelatedItem         []base.Link
+}
+type ChasPowerSuppliesInputRanges struct {
+	InputType          string `json:"InputType"`
+	MaximumFrequencyHz int    `json:"MaximumFrequencyHz"`
+	MaximumVoltage     int    `json:"MaximumVoltage"`
+	MinimumFrequencyHz int    `json:"MinimumFrequencyHz"`
+	MinimumVoltage     int    `json:"MinimumVoltage"`
+	OutputWattage      int    `json:"OutputWattage"`
+}
+type ChasPowerSuppliesOem struct {
+}
+type ChasPowerSupplies struct {
+	base.Meta
+	Assembly             base.Link
+	EfficiencyPercent    float64 `json:"EfficiencyPercent"`
+	FirmwareVersion      string  `json:"FirmwareVersion"`
+	HotPluggable         bool    `json:"HotPluggable"`
+	InputRanges          []ChasPowerSuppliesInputRanges
+	LastPowerOutputWatts float64 `json:"LastPowerOutputWatts"`
+	LineInputVoltage     float64 `json:"LineInputVoltage"`
+	LineInputVoltageType string  `json:"LineInputVoltageType"`
+	Manufacturer         string  `json:"Manufacturer"`
+	MemberId             string  `json:"MemberId"`
+	Model                string  `json:"Model"`
+	Name                 string  `json:"MemberId"`
+	OEM                  ChasPowerSuppliesOem
+	PartNumber           string  `json:"PartNumber"`
+	PowerCapacityWatts   float64 `json:"PowerCapacityWatts"`
+	PowerInputWatts      float64 `json:"PowerInputWatts"`
+	PowerOutputWatts     float64 `json:"PowerOutputWatts"`
+	PowerSupplyType      string  `json:"PowerSupplyType"`
+	Redundancy           []ChasPowerRedundancy
+	RedundancyOdataCount int `json:"Redundancy@odata.count"`
+	RelatedItem          []base.Link
+	SerialNumber         string `json:"SerialNumber"`
+	SparePartNumber      string `json:"SparePartNumber"`
+	Status               base.Status
+}
+type ChasPowerRedundancy struct {
+	base.Meta
+	MaxNumSupported         int    `json:"MaxNumSupported"`
+	MemberId                string `json:"MemberId"`
+	MinNumNeeded            int    `json:"MinNumNeeded"`
+	Mode                    string `json:"Mode"`
+	Name                    string `json:"Name"`
+	RedundancySet           []base.Link
+	RedundancySetOdataCount int `json:"RedundancySet@odata.count"`
+	Status                  base.Status
+}
+type ChasVoltages struct {
 }
