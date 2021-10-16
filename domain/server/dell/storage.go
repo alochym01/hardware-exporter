@@ -40,8 +40,6 @@ func (s Storage) StatusToNumber() float64 {
 
 type StorageDisk struct {
 	base.Meta
-	Actions                       SystemsStorageDiskAction
-	Assembly                      base.Link
 	BlockSizeBytes                int    `json:"BlockSizeBytes"`
 	CapableSpeedGbs               int    `json:"CapableSpeedGbs"`
 	CapacityBytes                 int    `json:"CapacityBytes"`
@@ -51,16 +49,12 @@ type StorageDisk struct {
 	FailurePredicted              bool   `json:"FailurePredicted"`
 	Id                            string `json:"Id"`
 	Identifiers                   []SystemsStorageDiskIdentifiers
-	IdentifiersOdataCount         int `json:"Identifiers@odata.count"`
 	Links                         SystemsStorageDiskLinks
 	Location                      []string `json:"Location"`
 	Manufacturer                  string   `json:"Manufacturer"`
 	MediaType                     string   `json:"MediaType"`
 	Name                          string   `json:"Name"`
 	NegotiatedSpeedGbs            int      `json:"NegotiatedSpeedGbs"`
-	OEM                           SystemsStorageDiskOEM
-	Operations                    []string `json:"Operations"`
-	OperationsOdataCount          int      `json:"Operations@odata.count"`
 	PartNumber                    string   `json:"PartNumber"`
 	PhysicalLocation              SystemsStorageDiskPhysicalLocation
 	PredictedMediaLifeLeftPercent float64 `json:"PredictedMediaLifeLeftPercent"`
@@ -69,4 +63,10 @@ type StorageDisk struct {
 	SerialNumber                  string  `json:"SerialNumber"`
 	Status                        base.Status
 	// RotationSpeedRPM              string  `json:"RotationSpeedRPM"`
+	// Actions SystemsStorageDiskAction
+	// Assembly                      base.Link
+	// IdentifiersOdataCount         int `json:"Identifiers@odata.count"`
+	// OEM                           SystemsStorageDiskOEM
+	// Operations                    []string `json:"Operations"`
+	// OperationsOdataCount          int      `json:"Operations@odata.count"`
 }
