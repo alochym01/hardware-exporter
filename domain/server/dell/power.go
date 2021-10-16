@@ -13,6 +13,6 @@ type PowerControl struct {
 	PowerSuppliesOdataCount int                   `json:"PowerSupplies@odata.count"`
 	Redundancy              []ChasPowerRedundancy // Chassis
 	RedundancyOdataCount    int                   `json:"Redundancy@odata.count"`
-	Voltages                ChasVoltages          // Chassis
+	Voltages                []ChasVoltages        // Chassis
 	VoltagesOdataCount      int                   `json:"Voltages@odata.count"`
 }

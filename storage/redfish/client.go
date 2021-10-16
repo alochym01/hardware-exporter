@@ -17,10 +17,7 @@ type APIClient struct {
 	User       string
 	Pass       string
 	HTTPClient *http.Client
-	// ChasURL    string
-	// SysURL     string
-	// URL        string
-	Host string
+	Server     string
 }
 
 // Get ....
@@ -45,8 +42,7 @@ func (c APIClient) Get(url string) ([]byte, error) {
 
 func (c APIClient) fetch(url string) (*http.Response, error) {
 	// Create a new request
-	fmt.Println("Storage URL -- ", url)
-	// req, err := http.NewRequest("GET", c.URL, nil)
+	// fmt.Println("Storage URL -- ", url)
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return nil, err
@@ -75,6 +71,7 @@ func NewAPIClient() *APIClient {
 	transport.TLSClientConfig = &tls.Config{
 		InsecureSkipVerify: true,
 	}
+	// Can set User/Pass from CLI
 	return &APIClient{
 		User: "root",
 		Pass: "calvin",
@@ -82,8 +79,6 @@ func NewAPIClient() *APIClient {
 			Transport: transport,
 			Timeout:   time.Duration(10) * time.Second,
 		},
-		Host: "",
-		// ChasURL: "",
-		// SysURL:  "",
+		Server: "",
 	}
 }

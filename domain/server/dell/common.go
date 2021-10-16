@@ -16,12 +16,12 @@ type ChasPowerControlPowerMetrics struct {
 }
 type ChasPowerControl struct {
 	base.Meta
-	MemberId            int `json:"MemberId"`
-	Name                int `json:"Name"`
-	PowerAllocatedWatts int `json:"PowerAllocatedWatts"`
-	PowerAvailableWatts int `json:"PowerAvailableWatts"`
-	PowerCapacityWatts  int `json:"PowerCapacityWatts"`
-	PowerConsumedWatts  int `json:"PowerConsumedWatts"`
+	MemberId            string  `json:"MemberId"`
+	Name                string  `json:"Name"`
+	PowerAllocatedWatts int     `json:"PowerAllocatedWatts"`
+	PowerAvailableWatts int     `json:"PowerAvailableWatts"`
+	PowerCapacityWatts  int     `json:"PowerCapacityWatts"`
+	PowerConsumedWatts  float64 `json:"PowerConsumedWatts"`
 	PowerLimit          ChasPowerControlPowerLimit
 	PowerMetrics        ChasPowerControlPowerMetrics
 	PowerRequestedWatts int `json:"PowerRequestedWatts"`
@@ -145,6 +145,15 @@ type ChassisPhysicalSecurity struct {
 	IntrusionSensorNumber int    `json:"IntrusionSensorNumber"`
 	IntrusionSensorReArm  string `json:"IntrusionSensorReArm"`
 }
+
+type ChassisThermalFans struct {
+}
+type ChassisThermalRedundancy struct {
+}
+type ChassisThermalTemperatures struct {
+}
+
+// Chassis end
 
 // Systems
 type SystemTrustedModules struct {
