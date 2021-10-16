@@ -15,32 +15,10 @@
 - hpilo_ilo_port_status
 - hpilo_iobusutil
 - hpilo_jittercount
-- hpilo_logical_drive_status
 - hpilo_memories_status
 - hpilo_memorybusutil
-- hpilo_network_adapter_status
-- hpilo_network_port_status
-- hpilo_networks_status
-- hpilo_physical_drive_metrics
-- hpilo_physical_drive_power_on_hours
-- hpilo_physical_drive_ssd_endurance
-- hpilo_physical_drive_status
-- hpilo_physical_drive_uncorrected_read_errors
-- hpilo_physical_drive_uncorrected_write_errors
-- hpilo_power_consumed_by_all
-- hpilo_power_consumed_by_each
-- hpilo_power_control
-- hpilo_power_line_input_voltage
-- hpilo_power_supplies_status
-- hpilo_power_supply_redundancy_status
-- hpilo_power_supply_status
 - hpilo_processor_status
 - hpilo_processors_status
-- hpilo_smart_storage_batteries_status
-- hpilo_smart_storage_battery_charge_level_percent
-- hpilo_smart_storage_battery_status
-- hpilo_storage_enclosure_status
-- hpilo_storages_status
 - hpilo_temperature_reading
 - hpilo_temperature_reading_status
 - hpilo_temperatures_status
@@ -81,4 +59,39 @@
         "State": "Enabled"
     }
   ```
--
+- hpilo_network_adapter_status
+- hpilo_network_port_status
+- hpilo_networks_status
+- 	SysEthernetInterface = prometheus.NewDesc(
+		"ethernet_port",
+		"ethernet_port {0: LinkUp, 2: LinkDown}",
+		[]string{"id", "speed"},
+		nil,
+	)
+
+- hpilo_smart_storage_batteries_status
+- hpilo_smart_storage_battery_charge_level_percent
+- hpilo_smart_storage_battery_status
+- hpilo_storage_enclosure_status
+- hpilo_storages_status
+- hpilo_logical_drive_status
+- hpilo_physical_drive_metrics
+- hpilo_physical_drive_power_on_hours
+- hpilo_physical_drive_ssd_endurance
+- hpilo_physical_drive_status
+- hpilo_physical_drive_uncorrected_read_errors
+- hpilo_physical_drive_uncorrected_write_errors
+- 	SysStorageDisk = prometheus.NewDesc(
+		"storage_drive_ssd_endurance",
+		"storage_drive_ssd_endurance {100: OK, 50: Warning, 20: Critical}",
+		[]string{"id", "capacity", "interface_type", "media_type"},
+		nil,
+	)
+
+- hpilo_power_consumed_by_all
+- hpilo_power_consumed_by_each
+- hpilo_power_control
+- hpilo_power_line_input_voltage
+- hpilo_power_supplies_status
+- hpilo_power_supply_redundancy_status
+- hpilo_power_supply_status

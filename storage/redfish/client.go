@@ -1,9 +1,11 @@
 package redfish
 
 import (
+	"crypto/tls"
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"time"
 )
 
 var Client *APIClient
@@ -15,8 +17,8 @@ type APIClient struct {
 	User       string
 	Pass       string
 	HTTPClient *http.Client
-	ChasURL    string
-	SysURL     string
+	// ChasURL    string
+	// SysURL     string
 	// URL        string
 	Host string
 }
@@ -60,14 +62,28 @@ func (c APIClient) fetch(url string) (*http.Response, error) {
 }
 
 // NewAPIClient return a APIClient struct
-func NewAPIClient(c *http.Client) *APIClient {
+func NewAPIClient() *APIClient {
+	// Create a custom Transport
+	// The default value of Transport's MaxIdleConnsPerHost.
+	// const DefaultMaxIdleConnsPerHost = 2
+	transport := http.DefaultTransport.(*http.Transport).Clone()
+	transport.IdleConnTimeout = 60 * time.Second
+	transport.MaxIdleConns = 100
+	transport.MaxConnsPerHost = 100
+	transport.MaxIdleConnsPerHost = 100
+	// Disable SSL check
+	transport.TLSClientConfig = &tls.Config{
+		InsecureSkipVerify: true,
+	}
 	return &APIClient{
-		User:       "root",
-		Pass:       "calvin",
-		HTTPClient: c,
-		// URL:        "",
-		ChasURL: "",
-		SysURL:  "",
-		Host:    "",
+		User: "root",
+		Pass: "calvin",
+		HTTPClient: &http.Client{
+			Transport: transport,
+			Timeout:   time.Duration(10) * time.Second,
+		},
+		Host: "",
+		// ChasURL: "",
+		// SysURL:  "",
 	}
 }
