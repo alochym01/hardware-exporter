@@ -1,25 +1,29 @@
 package redfish
 
 import (
+	"crypto/tls"
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"time"
 )
 
-var Client APIClient
+var Client *APIClient
+
+// var Client APIClient
 
 // APIClient ...
 type APIClient struct {
 	User       string
 	Pass       string
 	HTTPClient *http.Client
-	URL        string
+	Server     string
 }
 
 // Get ....
-func (c APIClient) Get() ([]byte, error) {
+func (c APIClient) Get(url string) ([]byte, error) {
 	// Make a http request
-	res, err := c.fetch()
+	res, err := c.fetch(url)
 	if err != nil {
 		fmt.Println(err)
 		return nil, err
@@ -36,9 +40,10 @@ func (c APIClient) Get() ([]byte, error) {
 	return data, nil
 }
 
-func (c APIClient) fetch() (*http.Response, error) {
+func (c APIClient) fetch(url string) (*http.Response, error) {
 	// Create a new request
-	req, err := http.NewRequest("GET", c.URL, nil)
+	// fmt.Println("Storage URL -- ", url)
+	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -53,11 +58,27 @@ func (c APIClient) fetch() (*http.Response, error) {
 }
 
 // NewAPIClient return a APIClient struct
-func NewAPIClient(c *http.Client) *APIClient {
+func NewAPIClient() *APIClient {
+	// Create a custom Transport
+	// The default value of Transport's MaxIdleConnsPerHost.
+	// const DefaultMaxIdleConnsPerHost = 2
+	transport := http.DefaultTransport.(*http.Transport).Clone()
+	transport.IdleConnTimeout = 60 * time.Second
+	transport.MaxIdleConns = 100
+	transport.MaxConnsPerHost = 100
+	transport.MaxIdleConnsPerHost = 100
+	// Disable SSL check
+	transport.TLSClientConfig = &tls.Config{
+		InsecureSkipVerify: true,
+	}
+	// Can set User/Pass from CLI
 	return &APIClient{
-		User:       "root",
-		Pass:       "calvin",
-		HTTPClient: c,
-		URL:        "",
+		User: "root",
+		Pass: "calvin",
+		HTTPClient: &http.Client{
+			Transport: transport,
+			Timeout:   time.Duration(10) * time.Second,
+		},
+		Server: "",
 	}
 }
