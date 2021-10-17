@@ -147,7 +147,7 @@ func SetStorageStatusMetric(ch chan<- prometheus.Metric, server string, url stri
 	var storeArrControllerCollection StorageArrayControllerCollection
 	err = json.Unmarshal(arrayControllerCollectionData, &storeArrControllerCollection)
 	// d, _ := json.MarshalIndent(storeArrControllerCollection, "", "    ")
-	fmt.Println(string(d))
+	// fmt.Println(string(d))
 	// Data cannot convert Storage struct
 	if err != nil {
 		fmt.Println(arrayControllerCollectionURL)
