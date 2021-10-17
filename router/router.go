@@ -9,7 +9,7 @@ import (
 // Router ...
 // func Router(db *sql.DB) *gin.Engine {
 func Router(ginMode string) *gin.Engine {
-	redfish.Client = redfish.NewAPIClient()
+	redfish.Client = redfish.NewAPIClient("username", "password")
 
 	router := gin.Default()
 

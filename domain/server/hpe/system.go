@@ -3,11 +3,12 @@ package hpe
 import "github.com/alochym01/hardware-exporter/domain/server/base"
 
 type SystemsCollection struct {
-	// base.Meta
-	// Description       string `json:"Description"`
-	// Members           []base.Link
-	// MembersOdataCount int    `json:"Members@odata.count"`
-	// Name              string `json:"Name"`
+	base.Meta
+	ODataEtag         string `json:"@odata.etag"` // HPE
+	Description       string `json:"Description"`
+	Members           []base.Link
+	MembersOdataCount int    `json:"Members@odata.count"`
+	Name              string `json:"Name"`
 }
 
 type Systems struct {
@@ -15,9 +16,9 @@ type Systems struct {
 	ODataEtag string `json:"@odata.etag"` // HPE
 	base.Actions
 	AssetTag           string `json:"AssetTag"`
-	Boot               SystemsBoot
 	Bios               base.Link
 	BiosVersion        string `json:"BiosVersion"`
+	Boot               SystemsBoot
 	EthernetInterfaces base.Link
 	HostName           string `json:"HostName"`
 	Id                 string `json:"Id"`

@@ -58,7 +58,7 @@ func (c APIClient) fetch(url string) (*http.Response, error) {
 }
 
 // NewAPIClient return a APIClient struct
-func NewAPIClient() *APIClient {
+func NewAPIClient(user, pass string) *APIClient {
 	// Create a custom Transport
 	// The default value of Transport's MaxIdleConnsPerHost.
 	// const DefaultMaxIdleConnsPerHost = 2
@@ -73,8 +73,8 @@ func NewAPIClient() *APIClient {
 	}
 	// Can set User/Pass from CLI
 	return &APIClient{
-		User: "root",
-		Pass: "calvin",
+		User: user,
+		Pass: pass,
 		HTTPClient: &http.Client{
 			Transport: transport,
 			Timeout:   time.Duration(10) * time.Second,

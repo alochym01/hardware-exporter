@@ -114,14 +114,103 @@ type SystemsTrustedModules struct {
 
 // SystemsTrustedModules end
 
+type SystemsOemHPEPowerSupplies struct {
+	PowerSuppliesMismatch bool `json:"PowerSuppliesMismatch"`
+	SystemsOemHPEStatus
+}
 type SystemsProcessorSummary struct {
-	Count  string `json:"Count"`
+	Count  int    `json:"Count"`
 	Model  string `json:"Model"`
 	Status base.HealthRollupStatus
 }
 
+type SystemsOemHPEStatus struct {
+	Status base.HealthStatus
+}
+type SystemsOemHPEAggregateHealthStatus struct {
+	AgentlessManagementService string `json:"AgentlessManagementService"`
+	BiosOrHardwareHealth       SystemsOemHPEStatus
+	FanRedundancy              string `json:"FanRedundancy"`
+	Fans                       SystemsOemHPEStatus
+	Memory                     SystemsOemHPEStatus
+	Network                    SystemsOemHPEStatus
+	PowerSupplies              SystemsOemHPEPowerSupplies
+	PowerSupplyRedundancy      string `json:"PowerSupplyRedundancy"`
+	Processors                 SystemsOemHPEStatus
+	SmartStorageBattery        SystemsOemHPEStatus
+	Storage                    SystemsOemHPEStatus
+	Temperatures               SystemsOemHPEStatus
+}
+type SystemsOemHPEUserDataEraseComponentStatus struct {
+}
+type SystemsOemHPESystemUsage struct {
+}
+type SystemsOemHPESystemROMAndiLOEraseComponentStatus struct {
+}
+type SystemsOemHPESMBIOS struct {
+}
+type SystemsOemHPEProcessorJitterControl struct {
+}
+type SystemsOemHPEPowerRegulatorModesSupported struct {
+}
+type SystemsOemHPEHostOS struct {
+}
+type SystemsOemHPEDeviceDiscoveryComplete struct {
+}
+type SystemsOemHPEBios struct {
+}
+type SystemsOemHPELinks struct {
+	EthernetInterfaces         base.Link
+	NetworkAdapters            base.Link
+	PCIDevices                 base.Link
+	PCISlots                   base.Link
+	SmartStorage               base.Link
+	USBDevices                 base.Link
+	USBPorts                   base.Link
+	WorkloadPerformanceAdvisor base.Link
+}
+type SystemsOemHPE struct {
+	AggregateHealthStatus           SystemsOemHPEAggregateHealthStatus
+	Bios                            SystemsOemHPEBios
+	CurrentPowerOnTimeSeconds       string `json:"CurrentPowerOnTimeSeconds"`
+	DeviceDiscoveryComplete         SystemsOemHPEDeviceDiscoveryComplete
+	ElapsedEraseTimeInMinutes       int    `json:"ElapsedEraseTimeInMinutes"`
+	EndOfPostDelaySeconds           string `json:"EndOfPostDelaySeconds"`
+	EstimatedEraseTimeInMinutes     int    `json:"EstimatedEraseTimeInMinutes"`
+	HostOS                          SystemsOemHPEHostOS
+	IntelligentProvisioningAlwaysOn bool   `json:"IntelligentProvisioningAlwaysOn"`
+	IntelligentProvisioningIndex    int    `json:"IntelligentProvisioningIndex"`
+	IntelligentProvisioningLocation string `json:"IntelligentProvisioningLocation"`
+	IntelligentProvisioningVersion  string `json:"IntelligentProvisioningVersion"`
+	IsColdBooting                   bool   `json:"IsColdBooting"`
+	Links                           SystemsOemHPELinks
+	PCAPartNumber                   string   `json:"PCAPartNumber"`
+	PCASerialNumber                 string   `json:"PCASerialNumber"`
+	PostDiscoveryCompleteTimeStamp  string   `json:"PostDiscoveryCompleteTimeStamp"`
+	PostDiscoveryMode               string   `json:"PostDiscoveryMode"`
+	PostMode                        string   `json:"PostMode"`
+	PostState                       string   `json:"PostState"`
+	PowerAllocationLimit            int      `json:"PowerAllocationLimit"`
+	PowerAutoOn                     string   `json:"PowerAutoOn"`
+	PowerOnDelay                    string   `json:"PowerOnDelay"`
+	PowerOnMinutes                  int      `json:"PowerOnMinutes"`
+	PowerRegulatorMode              string   `json:"PowerRegulatorMode"`
+	PowerRegulatorModesSupported    []string `json:"PowerRegulatorModesSupported"`
+	// PowerRegulatorModesSupported        []SystemsOemHPEPowerRegulatorModesSupported
+	ProcessorJitterControl              SystemsOemHPEProcessorJitterControl
+	SMBIOS                              SystemsOemHPESMBIOS
+	ServerFQDN                          string `json:"ServerFQDN"`
+	SmartStorageConfig                  []base.Link
+	SystemROMAndiLOEraseComponentStatus SystemsOemHPESystemROMAndiLOEraseComponentStatus
+	SystemROMAndiLOEraseStatus          string `json:"SystemROMAndiLOEraseStatus"`
+	SystemUsage                         SystemsOemHPESystemUsage
+	UserDataEraseComponentStatus        SystemsOemHPEUserDataEraseComponentStatus
+	UserDataEraseStatus                 string `json:"UserDataEraseStatus"`
+	VirtualProfile                      string `json:"VirtualProfile"`
+}
 type SystemsOem struct {
 	// TODO take time to parse
+	HPE SystemsOemHPE
 }
 
 type SystemsMemorySummary struct {

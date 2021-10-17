@@ -1,7 +1,7 @@
 package server
 
 import (
-	"github.com/alochym01/hardware-exporter/domain/server/dell"
+	"github.com/alochym01/hardware-exporter/domain/server/hpe"
 	"github.com/alochym01/hardware-exporter/storage/redfish"
 	"github.com/gin-gonic/gin"
 	"github.com/prometheus/client_golang/prometheus"
@@ -19,7 +19,8 @@ func (handler DellHandler) Metric(c *gin.Context) {
 	// Register Server Dell Metrics
 	// Using custom registry
 	registry := prometheus.NewRegistry()
-	server := dell.NewMetrics()
+	// dellMetrics := dell.NewMetrics()
+	server := hpe.NewMetrics()
 	registry.MustRegister(server)
 
 	// Make promhttp response to Request
