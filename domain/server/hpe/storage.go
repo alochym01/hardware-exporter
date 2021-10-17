@@ -16,7 +16,7 @@ type StorageDisk struct {
 	Description                       string   `json:"Description"`
 	DiskDriveStatusReasons            []string `json:"DiskDriveStatusReasons"`
 	DiskDriveUse                      string   `json:"DiskDriveUse"`
-	EncryptedDrive                    string   `json:"EncryptedDrive"`
+	EncryptedDrive                    bool     `json:"EncryptedDrive"`
 	FirmwareVersion                   DiskDrivesFirmwareVersion
 	Id                                string  `json:"Id"`
 	InterfaceSpeedMbps                int     `json:"InterfaceSpeedMbps"`
