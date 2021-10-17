@@ -6,10 +6,10 @@ type DiskDrivesFirmwareVersion struct {
 }
 type StorageDisk struct {
 	base.Meta
-	BlockSizeBytes                    float64  `json:"BlockSizeBytes"`
+	BlockSizeBytes                    int      `json:"BlockSizeBytes"`
 	CapacityGB                        float64  `json:"CapacityGB"`
-	CapacityLogicalBlocks             string   `json:"CapacityLogicalBlocks"`
-	CapacityMiB                       string   `json:"CapacityMiB"`
+	CapacityLogicalBlocks             int      `json:"CapacityLogicalBlocks"`
+	CapacityMiB                       float64  `json:"CapacityMiB"`
 	CarrierApplicationVersion         string   `json:"CarrierApplicationVersion"`
 	CarrierAuthenticationStatus       string   `json:"CarrierAuthenticationStatus"`
 	CurrentTemperatureCelsius         int      `json:"CurrentTemperatureCelsius"`
