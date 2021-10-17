@@ -52,6 +52,12 @@ func (m Metrics) SystemsCollector(ch chan<- prometheus.Metric, c redfish.APIClie
 	// Set Systems Storage Disk metric
 	SetStorageDiskMetric(ch, server, store)
 	// Systems Storage Disk end
+	// Systems Ethernet Interfaces start
+	ethIfacesLink := fmt.Sprintf("%s%s", server, sys.EthernetInterfaces.ODataID)
+	SetEthernetMetric(ch, server, ethIfacesLink)
+	// Systems Ethernet Interfaces end
+
+	// SetEthernetMetric(ch chan<- prometheus.Metric, server string, url string)
 }
 func SetStorageDiskMetric(ch chan<- prometheus.Metric, server string, store *StorageArrayController) {
 	var diskCollection SmartStorageDiskDriveCollection
@@ -215,7 +221,6 @@ func SetStorageStatusMetric(ch chan<- prometheus.Metric, server string, url stri
 	// Systems Storage ArrayController Start
 	// Set Systems Storage ArrayController URL
 	var arrayControllerURL string
-	// arrayControllerURL = fmt.Sprintf("%s%s", server, storeCollection.Links.ArrayControllers.ODataID)
 	arrayControllerURL = fmt.Sprintf("%s%s", server, storeArrControllerCollection.Members[0].ODataID)
 	// Get Systems Storage Data
 	arrayControllerData, err := redfish.Client.Get(arrayControllerURL)
@@ -239,6 +244,54 @@ func SetStorageStatusMetric(ch chan<- prometheus.Metric, server string, url stri
 
 	// m.sysStorageStatus(ch, store) // Systems Storage Data end
 	return &storeArrController, nil
+}
+
+func SetEthernetMetric(ch chan<- prometheus.Metric, server string, url string) {
+	// Systems Ethernet Interfaces Collection
+	data, err := redfish.Client.Get(url)
+	if err != nil {
+		fmt.Println(url)
+		fmt.Println(err.Error())
+		return
+	}
+	var ethIf EthernetInterfaceCollection
+	err = json.Unmarshal(data, &ethIf)
+	// Data cannot convert StorageCollection struct
+	if err != nil {
+		fmt.Println(url)
+		fmt.Println(err.Error())
+		return
+	}
+	// Systems Ethernet Interfaces Collection end
+	// Systems Ethernet Interfaces start
+	for _, v := range ethIf.Members {
+		// TODO go routine start
+		ifURL := fmt.Sprintf("%s%s", server, v.ODataID)
+		// Get Ethernet Interfaces Data
+		ifData, err := redfish.Client.Get(ifURL)
+		// Problem connect to server
+		if err != nil {
+			fmt.Println(ifURL)
+			fmt.Println(err.Error())
+			continue
+		}
+		var iface EthernetInterface
+		err = json.Unmarshal(ifData, &iface)
+		// Data cannot convert EthernetInterface struct
+		if err != nil {
+			fmt.Println(ifURL)
+			fmt.Println(err.Error())
+			continue
+		}
+		// TODO go routine end
+		ch <- prometheus.MustNewConstMetric(
+			base.SysEthernetInterface,
+			prometheus.GaugeValue,
+			iface.PortStatus(),
+			iface.MACAddress,
+			fmt.Sprintf("%d", iface.SpeedMbps),
+		)
+	}
 }
 
 func (m Metrics) ChassisCollector(ch chan<- prometheus.Metric, c redfish.APIClient) {
