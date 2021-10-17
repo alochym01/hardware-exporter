@@ -13,19 +13,27 @@ import (
 type Metrics struct {
 }
 
-func (m Metrics) Desc(ch chan<- *prometheus.Desc) {
-	ch <- base.SysState
-}
+// func (m Metrics) Desc(ch chan<- *prometheus.Desc) {
+// 	ch <- base.SysState
+// 	ch <- base.SysStorageState
+// 	ch <- base.SysStorageDisk
+// 	ch <- base.SysEthernetInterface
+// 	ch <- base.ChasPower
+// }
 
 // Describe a description of metrics
 func (m Metrics) Describe(ch chan<- *prometheus.Desc) {
 	ch <- base.SysState
+	ch <- base.SysStorageState
+	ch <- base.SysStorageDisk
+	ch <- base.SysEthernetInterface
+	ch <- base.ChasPower
 }
 
 // Collect return a metric with all desc value and metric value
 func (m Metrics) Collect(ch chan<- prometheus.Metric) {
 	// System Metrics
-	m.SystemsCollector(ch)
+	m.SystemsCollector(ch, *redfish.Client)
 	// Chassis Metrics
 	m.ChassisCollector(ch, *redfish.Client)
 }
@@ -35,9 +43,9 @@ func NewMetrics() Metrics {
 	return Metrics{}
 }
 
-func (m Metrics) SystemsCollector(ch chan<- prometheus.Metric) {
+func (m Metrics) SystemsCollector(ch chan<- prometheus.Metric, c redfish.APIClient) {
 	// Get server to get metrics
-	server := redfish.Client.Server
+	server := c.Server
 
 	// // get System Data
 	sys, err := SetSystemHealthMetric(ch, server)
@@ -57,31 +65,6 @@ func (m Metrics) SystemsCollector(ch chan<- prometheus.Metric) {
 	// Systems Storage Disk start
 	// Set Systems Storage Disk metric
 	SetStorageDiskMetric(ch, server, *store)
-	// for _, v := range store.Drives {
-	// 	// TODO go routine start
-	// 	diskURL := fmt.Sprintf("%s%s", server, v.ODataID)
-	// 	// Get Systems Storage Disk Data
-	// 	diskData, err := redfish.Client.Get(diskURL)
-	// 	// Problem connect to server
-	// 	if err != nil {
-	// 		fmt.Println(diskURL)
-	// 		fmt.Println(err.Error())
-	// 		continue
-	// 	}
-	// 	var disk StorageDisk
-	// 	err = json.Unmarshal(diskData, &disk)
-	// 	// Data cannot convert StorageDisk struct
-	// 	if err != nil {
-	// 		fmt.Println(diskURL)
-	// 		fmt.Println(err.Error())
-	// 		continue
-	// 	}
-	// 	// TODO go routine end
-	// 	// Check Disk is SSD
-	// 	if disk.PredictedMediaLifeLeftPercent > 0 {
-	// 		m.sysStorageDisk(ch, disk)
-	// 	}
-	// }
 	// // Systems Storage Disk end
 
 	// Systems Ethernet Interfaces start
