@@ -295,6 +295,96 @@ func SetEthernetMetric(ch chan<- prometheus.Metric, server string, url string) {
 }
 
 func (m Metrics) ChassisCollector(ch chan<- prometheus.Metric, c redfish.APIClient) {
-	// Get server to get metrics
-	// server := c.Server
+	// Get server to get metric
+	server := c.Server
+
+	// Chassis Collection start
+	chasCollectionURL := fmt.Sprintf("%s%s", server, "/redfish/v1/Chassis")
+	chas, err := GetChassis(chasCollectionURL, server)
+	if err != nil {
+		return
+	}
+	// Chassis Collection end
+
+	// Set PowerControl Link
+	chasPowerLink := fmt.Sprintf("%s%s", server, chas.Power.ODataID)
+	SetPowerMetrics(ch, chasPowerLink)
+
+	// Set Thermal Link
+	// chasThermalLink := fmt.Sprintf("%s%s", Host, chas.Thermal.ODataID)
+}
+
+func GetChassis(url string, server string) (*Chassis, error) {
+	var chasCollection ChassisCollection
+	dataCollection, err := redfish.Client.Get(url)
+	// Problem connect to server
+	if err != nil {
+		fmt.Println(url)
+		fmt.Println(err.Error())
+		return nil, err
+	}
+	err = json.Unmarshal(dataCollection, &chasCollection)
+	// Data cannot convert ChassisCollection struct
+	if err != nil {
+		fmt.Println(url)
+		fmt.Println(err.Error())
+		return nil, err
+	}
+	// b, _ := json.MarshalIndent(chas, "", "    ")
+	// fmt.Println(string(b))
+
+	// Chassis start
+	// Set a chassis url
+	var chasURL string
+	for _, v := range chasCollection.Members {
+		chasURL = fmt.Sprintf("%s%s", server, v.ODataID)
+	}
+
+	// get Chassis Data
+	dataChassis, err := redfish.Client.Get(chasURL)
+	// Problem connect to server
+	if err != nil {
+		fmt.Println(chasURL)
+		fmt.Println(err.Error())
+		return nil, err
+	}
+
+	var chas Chassis
+	// Data cannot convert Chassis struct
+	err = json.Unmarshal(dataChassis, &chas)
+	if err != nil {
+		fmt.Println(chasURL)
+		fmt.Println(err.Error())
+		return nil, err
+	}
+
+	// b, _ := json.MarshalIndent(chas, "", "    ")
+	// fmt.Println(string(b))
+	return &chas, nil
+}
+
+func SetPowerMetrics(ch chan<- prometheus.Metric, url string) {
+	data, err := redfish.Client.Get(url)
+	// Problem connect to server
+	if err != nil {
+		return
+	}
+	var power PowerControl
+	err = json.Unmarshal(data, &power)
+	// Data cannot convert PowerControl struct
+	if err != nil {
+		fmt.Println(url)
+		fmt.Println(err.Error())
+		return
+	}
+	// b, _ := json.MarshalIndent(power, "", "    ")
+	// fmt.Println(string(b))
+	// Everything is ok
+	for _, v := range power.PowerControl {
+		ch <- prometheus.MustNewConstMetric(
+			base.ChasPower,
+			prometheus.GaugeValue,
+			v.PowerConsumedWatts,
+		)
+	}
 }
