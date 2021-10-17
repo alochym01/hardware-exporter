@@ -70,8 +70,6 @@ func SetStorageDiskMetric(ch chan<- prometheus.Metric, server string, store *Sto
 		fmt.Println(err.Error())
 		return
 	}
-	d, _ := json.MarshalIndent(diskCollectionData, "", "    ")
-	fmt.Println(string(d))
 
 	for _, v := range diskCollection.Members {
 		// TODO go routine start
@@ -92,6 +90,8 @@ func SetStorageDiskMetric(ch chan<- prometheus.Metric, server string, store *Sto
 			fmt.Println(err.Error())
 			continue
 		}
+		d, _ := json.MarshalIndent(diskData, "", "    ")
+		fmt.Println(string(d))
 		// TODO go routine end
 		// Check Disk is SSD
 		if disk.SSDEnduranceUtilizationPercentage > 0 {
