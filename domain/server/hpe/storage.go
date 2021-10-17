@@ -9,7 +9,7 @@ type StorageDisk struct {
 	BlockSizeBytes                    int      `json:"BlockSizeBytes"`
 	CapacityGB                        float64  `json:"CapacityGB"`
 	CapacityLogicalBlocks             int      `json:"CapacityLogicalBlocks"`
-	CapacityMiB                       float64  `json:"CapacityMiB"`
+	CapacityMiB                       int      `json:"CapacityMiB"`
 	CarrierApplicationVersion         string   `json:"CarrierApplicationVersion"`
 	CarrierAuthenticationStatus       string   `json:"CarrierAuthenticationStatus"`
 	CurrentTemperatureCelsius         int      `json:"CurrentTemperatureCelsius"`
