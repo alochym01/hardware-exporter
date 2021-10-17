@@ -2,7 +2,90 @@ package hpe
 
 import "github.com/alochym01/hardware-exporter/domain/server/base"
 
-type HpeSmartStorageDiskDriveCollection struct {
+type DiskDrivesFirmwareVersion struct {
+}
+type StorageDisk struct {
+	base.Meta
+	BlockSizeBytes                    float64  `json:"BlockSizeBytes"`
+	CapacityGB                        float64  `json:"CapacityGB"`
+	CapacityLogicalBlocks             string   `json:"CapacityLogicalBlocks"`
+	CapacityMiB                       string   `json:"CapacityMiB"`
+	CarrierApplicationVersion         string   `json:"CarrierApplicationVersion"`
+	CarrierAuthenticationStatus       string   `json:"CarrierAuthenticationStatus"`
+	CurrentTemperatureCelsius         int      `json:"CurrentTemperatureCelsius"`
+	Description                       string   `json:"Description"`
+	DiskDriveStatusReasons            []string `json:"DiskDriveStatusReasons"`
+	DiskDriveUse                      string   `json:"DiskDriveUse"`
+	EncryptedDrive                    string   `json:"EncryptedDrive"`
+	FirmwareVersion                   DiskDrivesFirmwareVersion
+	Id                                string  `json:"Id"`
+	InterfaceSpeedMbps                int     `json:"InterfaceSpeedMbps"`
+	InterfaceType                     string  `json:"InterfaceType"`
+	LegacyBootPriority                string  `json:"LegacyBootPriority"`
+	Location                          string  `json:"Location"`
+	LocationFormat                    string  `json:"LocationFormat"`
+	MaximumTemperatureCelsius         int     `json:"MaximumTemperatureCelsius"`
+	MediaType                         string  `json:"MediaType"`
+	Model                             string  `json:"Model"`
+	Name                              string  `json:"Name"`
+	PowerOnHours                      string  `json:"PowerOnHours"`
+	RotationalSpeedRpm                int     `json:"RotationalSpeedRpm"`
+	SSDEnduranceUtilizationPercentage float64 `json:"SSDEnduranceUtilizationPercentage"`
+	SerialNumber                      string  `json:"SerialNumber"`
+	Status                            base.Status
+	UncorrectedReadErrors             int `json:"UncorrectedReadErrors"`
+	UncorrectedWriteErrors            int `json:"UncorrectedWriteErrors"`
+
+	/*
+
+		    "@odata.context": "/redfish/v1/$metadata#HpeSmartStorageDiskDrive.HpeSmartStorageDiskDrive",
+		    "@odata.etag": "W/\"DF577A00\"",
+		    "@odata.id": "/redfish/v1/Systems/1/SmartStorage/ArrayControllers/0/DiskDrives/0",
+		    "@odata.type": "#HpeSmartStorageDiskDrive.v2_1_0.HpeSmartStorageDiskDrive",
+		    "BlockSizeBytes": 512,
+		    "CapacityGB": 600,
+		    "CapacityLogicalBlocks": 1172123568,
+		    "CapacityMiB": 572325,
+		    "CarrierApplicationVersion": "11",
+		    "CarrierAuthenticationStatus": "OK",
+		    "CurrentTemperatureCelsius": 38,
+		    "Description": "HPE Smart Storage Disk Drive View",
+		    "DiskDriveStatusReasons": [
+		        "None"
+		    ],
+		    "DiskDriveUse": "Data",
+		    "EncryptedDrive": false,
+		    "FirmwareVersion": {
+		        "Current": {
+		            "VersionString": "HPD1"
+		        }
+		    },
+		    "Id": "0",
+		    "InterfaceSpeedMbps": 12000,
+		    "InterfaceType": "SAS",
+		    "LegacyBootPriority": "Primary",
+		    "Location": "1I:1:1",
+		    "LocationFormat": "ControllerPort:Box:Bay",
+		    "MaximumTemperatureCelsius": 48,
+		    "MediaType": "HDD",
+		    "Model": "EG000600JWJNH",
+		    "Name": "HpeSmartStorageDiskDrive",
+		    "PowerOnHours": null,
+		    "RotationalSpeedRpm": 10000,
+		    "SSDEnduranceUtilizationPercentage": null,
+		    "SerialNumber": "39Q0A0WDFF5F",
+		    "Status": {
+		        "Health": "OK",
+		        "State": "Enabled"
+		    },
+		    "UncorrectedReadErrors": 0,
+		    "UncorrectedWriteErrors": 0
+		}
+
+	*/
+}
+
+type SmartStorageDiskDriveCollection struct {
 	StorageArrayControllerCollection
 }
 type StorageArrayControllerLinks struct {
