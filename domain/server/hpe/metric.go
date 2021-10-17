@@ -99,7 +99,7 @@ func SetStorageDiskMetric(ch chan<- prometheus.Metric, server string, store *Sto
 			ch <- prometheus.MustNewConstMetric(
 				base.SysStorageDisk,
 				prometheus.GaugeValue,
-				disk.SSDEnduranceUtilizationPercentage,
+				(100.0 - disk.SSDEnduranceUtilizationPercentage),
 				fmt.Sprintf("%s", disk.Id),
 				fmt.Sprintf("%d", disk.CapacityMiB),
 				disk.InterfaceType,
