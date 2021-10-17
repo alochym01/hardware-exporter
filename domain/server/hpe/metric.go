@@ -160,7 +160,7 @@ func SetStorageStatusMetric(ch chan<- prometheus.Metric, server string, url stri
 	// Set Systems Storage ArrayController URL
 	var arrayControllerURL string
 	// arrayControllerURL = fmt.Sprintf("%s%s", server, storeCollection.Links.ArrayControllers.ODataID)
-	arrayControllerURL = fmt.Sprintf("%s%s", server, storeCollection.Members[0].ODataID)
+	arrayControllerURL = fmt.Sprintf("%s%s", server, storeArrControllerCollection.Members[0].ODataID)
 	// Get Systems Storage Data
 	arrayControllerData, err := redfish.Client.Get(arrayControllerURL)
 	// Problem connect to server
