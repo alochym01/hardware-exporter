@@ -172,7 +172,7 @@ type SystemsOemHPELinks struct {
 type SystemsOemHPE struct {
 	AggregateHealthStatus           SystemsOemHPEAggregateHealthStatus
 	Bios                            SystemsOemHPEBios
-	CurrentPowerOnTimeSeconds       string `json:"CurrentPowerOnTimeSeconds"`
+	CurrentPowerOnTimeSeconds       int `json:"CurrentPowerOnTimeSeconds"`
 	DeviceDiscoveryComplete         SystemsOemHPEDeviceDiscoveryComplete
 	ElapsedEraseTimeInMinutes       int    `json:"ElapsedEraseTimeInMinutes"`
 	EndOfPostDelaySeconds           string `json:"EndOfPostDelaySeconds"`
