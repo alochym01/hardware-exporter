@@ -6,7 +6,7 @@ type EthernetInterfaceCollection struct {
 	base.Meta
 	Description       string `json:"Description"`
 	Members           []base.Link
-	MembersOdataCount string `json:"Members@odata.count"`
+	MembersOdataCount int    `json:"Members@odata.count"`
 	Name              string `json:"Name"`
 }
 type EthernetInterface struct {
