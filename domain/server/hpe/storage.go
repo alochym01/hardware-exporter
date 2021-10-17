@@ -28,7 +28,7 @@ type StorageDisk struct {
 	MediaType                         string  `json:"MediaType"`
 	Model                             string  `json:"Model"`
 	Name                              string  `json:"Name"`
-	PowerOnHours                      string  `json:"PowerOnHours"`
+	PowerOnHours                      int     `json:"PowerOnHours"`
 	RotationalSpeedRpm                int     `json:"RotationalSpeedRpm"`
 	SSDEnduranceUtilizationPercentage float64 `json:"SSDEnduranceUtilizationPercentage"`
 	SerialNumber                      string  `json:"SerialNumber"`
