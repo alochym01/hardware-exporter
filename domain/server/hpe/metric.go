@@ -146,7 +146,7 @@ func SetStorageStatusMetric(ch chan<- prometheus.Metric, server string, url stri
 	}
 	var storeArrControllerCollection StorageArrayControllerCollection
 	err = json.Unmarshal(arrayControllerCollectionData, &storeArrControllerCollection)
-	d, _ := json.MarshalIndent(storeArrControllerCollection, "", "    ")
+	// d, _ := json.MarshalIndent(storeArrControllerCollection, "", "    ")
 	fmt.Println(string(d))
 	// Data cannot convert Storage struct
 	if err != nil {
@@ -159,7 +159,8 @@ func SetStorageStatusMetric(ch chan<- prometheus.Metric, server string, url stri
 	// Systems Storage ArrayController Start
 	// Set Systems Storage ArrayController URL
 	var arrayControllerURL string
-	arrayControllerURL = fmt.Sprintf("%s%s", server, storeCollection.Links.ArrayControllers.ODataID)
+	// arrayControllerURL = fmt.Sprintf("%s%s", server, storeCollection.Links.ArrayControllers.ODataID)
+	arrayControllerURL = fmt.Sprintf("%s%s", server, storeCollection.Members[0].ODataID)
 	// Get Systems Storage Data
 	arrayControllerData, err := redfish.Client.Get(arrayControllerURL)
 	// Problem connect to server
@@ -171,7 +172,7 @@ func SetStorageStatusMetric(ch chan<- prometheus.Metric, server string, url stri
 
 	var storeArrController StorageArrayController
 	err = json.Unmarshal(arrayControllerData, &storeArrController)
-	d, _ = json.MarshalIndent(storeArrController, "", "    ")
+	d, _ := json.MarshalIndent(storeArrController, "", "    ")
 	fmt.Println(string(d))
 	// Data cannot convert Storage struct
 	if err != nil {
