@@ -15,7 +15,7 @@ type DellHandler struct{}
 // Metric ...
 func (handler DellHandler) Metric(c *gin.Context) {
 	// Set Host get from Request
-	redfish.Client.Server = c.Query("host")
+	redfish.ClientDELL.Server = c.Query("host")
 
 	// Register Server Dell Metrics
 	// Using custom registry
@@ -40,7 +40,7 @@ type HPEHandler struct{}
 // Metric ...
 func (handler HPEHandler) Metric(c *gin.Context) {
 	// Set Host get from Request
-	redfish.Client.Server = c.Query("host")
+	redfish.ClientHPE.Server = c.Query("host")
 
 	// Register Server Dell Metrics
 	// Using custom registry

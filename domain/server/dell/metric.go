@@ -13,14 +13,6 @@ import (
 type Metrics struct {
 }
 
-// func (m Metrics) Desc(ch chan<- *prometheus.Desc) {
-// 	ch <- base.SysState
-// 	ch <- base.SysStorageState
-// 	ch <- base.SysStorageDisk
-// 	ch <- base.SysEthernetInterface
-// 	ch <- base.ChasPower
-// }
-
 // Describe a description of metrics
 func (m Metrics) Describe(ch chan<- *prometheus.Desc) {
 	ch <- base.SysState
@@ -33,9 +25,9 @@ func (m Metrics) Describe(ch chan<- *prometheus.Desc) {
 // Collect return a metric with all desc value and metric value
 func (m Metrics) Collect(ch chan<- prometheus.Metric) {
 	// System Metrics
-	m.SystemsCollector(ch, *redfish.Client)
+	m.SystemsCollector(ch, *redfish.ClientDELL)
 	// Chassis Metrics
-	m.ChassisCollector(ch, *redfish.Client)
+	m.ChassisCollector(ch, *redfish.ClientDELL)
 }
 
 // NewMetrics return a Metrics struct
@@ -87,7 +79,7 @@ func SetStorageDiskMetric(ch chan<- prometheus.Metric, server string, store Stor
 		// TODO go routine start
 		diskURL := fmt.Sprintf("%s%s", server, v.ODataID)
 		// Get Systems Storage Disk Data
-		diskData, err := redfish.Client.Get(diskURL)
+		diskData, err := redfish.ClientDELL.Get(diskURL)
 		// Problem connect to server
 		if err != nil {
 			fmt.Println(diskURL)
@@ -119,8 +111,9 @@ func SetStorageDiskMetric(ch chan<- prometheus.Metric, server string, store Stor
 	}
 	return
 }
+
 func SetStorageStatusMetric(ch chan<- prometheus.Metric, server string, url string) (*Storage, error) {
-	data, err := redfish.Client.Get(url)
+	data, err := redfish.ClientDELL.Get(url)
 	// Problem connect to server
 	if err != nil {
 		fmt.Println(url)
@@ -142,13 +135,13 @@ func SetStorageStatusMetric(ch chan<- prometheus.Metric, server string, url stri
 	var storeURL string
 	for _, v := range storeCollection.Members {
 		if strings.Contains(v.ODataID, "RAID") {
-			// storeURL = fmt.Sprintf("%s%s", redfish.Client.Host, v.ODataID)
+			// storeURL = fmt.Sprintf("%s%s", redfish.ClientDELL.Host, v.ODataID)
 			storeURL = fmt.Sprintf("%s%s", server, v.ODataID)
 			break
 		}
 	}
 	// Get Systems Storage Data
-	storeData, err := redfish.Client.Get(storeURL)
+	storeData, err := redfish.ClientDELL.Get(storeURL)
 	// Problem connect to server
 	if err != nil {
 		fmt.Println(storeURL)
@@ -177,7 +170,7 @@ func SetStorageStatusMetric(ch chan<- prometheus.Metric, server string, url stri
 func SetSystemHealthMetric(ch chan<- prometheus.Metric, server string) (*Systems, error) {
 	var sysCollection SystemsCollection
 	sysCollectionURL := fmt.Sprintf("%s%s", server, "/redfish/v1/Systems")
-	data, err := redfish.Client.Get(sysCollectionURL)
+	data, err := redfish.ClientDELL.Get(sysCollectionURL)
 	// Problem connect to server
 	if err != nil {
 		fmt.Println(sysCollectionURL)
@@ -203,7 +196,7 @@ func SetSystemHealthMetric(ch chan<- prometheus.Metric, server string) (*Systems
 	}
 
 	// get System Data
-	sysData, err := redfish.Client.Get(sysURL)
+	sysData, err := redfish.ClientDELL.Get(sysURL)
 	// Problem connect to server
 	if err != nil {
 		fmt.Println(sysURL)
@@ -232,7 +225,7 @@ func SetSystemHealthMetric(ch chan<- prometheus.Metric, server string) (*Systems
 
 func SetEthernetMetric(ch chan<- prometheus.Metric, server string, url string) {
 	// Systems Ethernet Interfaces Collection
-	data, err := redfish.Client.Get(url)
+	data, err := redfish.ClientDELL.Get(url)
 	if err != nil {
 		fmt.Println(url)
 		fmt.Println(err.Error())
@@ -252,7 +245,7 @@ func SetEthernetMetric(ch chan<- prometheus.Metric, server string, url string) {
 		// TODO go routine start
 		ifURL := fmt.Sprintf("%s%s", server, v.ODataID)
 		// Get Ethernet Interfaces Data
-		ifData, err := redfish.Client.Get(ifURL)
+		ifData, err := redfish.ClientDELL.Get(ifURL)
 		// Problem connect to server
 		if err != nil {
 			fmt.Println(ifURL)
@@ -278,54 +271,6 @@ func SetEthernetMetric(ch chan<- prometheus.Metric, server string, url string) {
 	}
 }
 
-func (m Metrics) sysStorageStatus(ch chan<- prometheus.Metric, s Storage) {
-	// d, _ := json.MarshalIndent(s, "", "    ")
-	// fmt.Println(string(d))
-	ch <- prometheus.MustNewConstMetric(
-		base.SysStorageState,
-		prometheus.GaugeValue,
-		s.StatusToNumber(),
-	)
-}
-
-func (m Metrics) sysStorageDisk(ch chan<- prometheus.Metric, s StorageDisk) {
-	// d, _ := json.MarshalIndent(s, "", "    ")
-	// fmt.Println(string(d))
-	ch <- prometheus.MustNewConstMetric(
-		base.SysStorageDisk,
-		prometheus.GaugeValue,
-		s.PredictedMediaLifeLeftPercent,
-		fmt.Sprintf("%s", s.Id),
-		fmt.Sprintf("%d", s.CapacityBytes),
-		s.Protocol,
-		s.MediaType,
-	)
-}
-
-func (m Metrics) sysEthernetInterface(ch chan<- prometheus.Metric, iface EthernetInterface) {
-	// d, _ := json.MarshalIndent(s, "", "    ")
-	// fmt.Println(string(d))
-	ch <- prometheus.MustNewConstMetric(
-		base.SysEthernetInterface,
-		prometheus.GaugeValue,
-		iface.PortStatus(),
-		iface.MACAddress,
-		fmt.Sprintf("%d", iface.SpeedMbps),
-	)
-}
-
-func (m Metrics) sysHealth(ch chan<- prometheus.Metric, s Systems) {
-	// d, _ := json.MarshalIndent(s, "", "    ")
-	// fmt.Println(string(d))
-	ch <- prometheus.MustNewConstMetric(
-		base.SysState,
-		prometheus.GaugeValue,
-		s.StatusToNumber(),
-		s.SKU,
-		s.SerialNumber,
-	)
-}
-
 func (m Metrics) ChassisCollector(ch chan<- prometheus.Metric, c redfish.APIClient) {
 	// Get server to get metric
 	server := c.Server
@@ -348,7 +293,7 @@ func (m Metrics) ChassisCollector(ch chan<- prometheus.Metric, c redfish.APIClie
 
 func GetChassis(url string, server string) (*Chassis, error) {
 	var chasCollection ChassisCollection
-	dataCollection, err := redfish.Client.Get(url)
+	dataCollection, err := redfish.ClientDELL.Get(url)
 	// Problem connect to server
 	if err != nil {
 		fmt.Println(url)
@@ -376,7 +321,7 @@ func GetChassis(url string, server string) (*Chassis, error) {
 	}
 
 	// get Chassis Data
-	dataChassis, err := redfish.Client.Get(chasURL)
+	dataChassis, err := redfish.ClientDELL.Get(chasURL)
 	// Problem connect to server
 	if err != nil {
 		fmt.Println(chasURL)
@@ -399,7 +344,7 @@ func GetChassis(url string, server string) (*Chassis, error) {
 }
 
 func SetPowerMetrics(ch chan<- prometheus.Metric, url string) {
-	data, err := redfish.Client.Get(url)
+	data, err := redfish.ClientDELL.Get(url)
 	// Problem connect to server
 	if err != nil {
 		return

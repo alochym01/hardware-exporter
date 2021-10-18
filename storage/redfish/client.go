@@ -8,7 +8,8 @@ import (
 	"time"
 )
 
-var Client *APIClient
+var ClientHPE *APIClient
+var ClientDELL *APIClient
 
 // var Client APIClient
 
@@ -63,7 +64,7 @@ func (c APIClient) GetUseGoRoutine(url string, ch chan<- []byte) {
 
 func (c APIClient) fetch(url string) (*http.Response, error) {
 	// Create a new request
-	fmt.Println("Storage URL -- ", url)
+	// fmt.Println("Storage URL -- ", url)
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return nil, err
