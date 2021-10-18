@@ -8,7 +8,8 @@ import (
 	"time"
 )
 
-var Client *APIClient
+var ClientHPE *APIClient
+var ClientDELL *APIClient
 
 // var Client APIClient
 
@@ -40,6 +41,27 @@ func (c APIClient) Get(url string) ([]byte, error) {
 	return data, nil
 }
 
+// Get ....
+func (c APIClient) GetUseGoRoutine(url string, ch chan<- []byte) {
+	// Make a http request
+	res, err := c.fetch(url)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	// Close http.Request connection
+	defer res.Body.Close()
+
+	// read the whole body into a []bytes
+	data, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	ch <- data
+	return
+}
+
 func (c APIClient) fetch(url string) (*http.Response, error) {
 	// Create a new request
 	// fmt.Println("Storage URL -- ", url)
@@ -58,7 +80,7 @@ func (c APIClient) fetch(url string) (*http.Response, error) {
 }
 
 // NewAPIClient return a APIClient struct
-func NewAPIClient() *APIClient {
+func NewAPIClient(user, pass string) *APIClient {
 	// Create a custom Transport
 	// The default value of Transport's MaxIdleConnsPerHost.
 	// const DefaultMaxIdleConnsPerHost = 2
@@ -73,8 +95,8 @@ func NewAPIClient() *APIClient {
 	}
 	// Can set User/Pass from CLI
 	return &APIClient{
-		User: "root",
-		Pass: "calvin",
+		User: user,
+		Pass: pass,
 		HTTPClient: &http.Client{
 			Transport: transport,
 			Timeout:   time.Duration(10) * time.Second,

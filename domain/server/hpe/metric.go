@@ -1,9 +1,8 @@
-package dell
+package hpe
 
 import (
 	"encoding/json"
 	"fmt"
-	"strings"
 
 	"github.com/alochym01/hardware-exporter/domain/server/base"
 	"github.com/alochym01/hardware-exporter/storage/redfish"
@@ -13,7 +12,6 @@ import (
 type Metrics struct {
 }
 
-// Describe a description of metrics
 func (m Metrics) Describe(ch chan<- *prometheus.Desc) {
 	ch <- base.SysState
 	ch <- base.SysStorageState
@@ -21,34 +19,30 @@ func (m Metrics) Describe(ch chan<- *prometheus.Desc) {
 	ch <- base.SysEthernetInterface
 	ch <- base.ChasPower
 }
-
-// Collect return a metric with all desc value and metric value
 func (m Metrics) Collect(ch chan<- prometheus.Metric) {
 	// System Metrics
-	m.SystemsCollector(ch, *redfish.ClientDELL)
+	m.SystemsCollector(ch, *redfish.ClientHPE)
 	// Chassis Metrics
-	m.ChassisCollector(ch, *redfish.ClientDELL)
+	m.ChassisCollector(ch, *redfish.ClientHPE)
 }
 
 // NewMetrics return a Metrics struct
 func NewMetrics() Metrics {
 	return Metrics{}
 }
-
 func (m Metrics) SystemsCollector(ch chan<- prometheus.Metric, c redfish.APIClient) {
 	// Get server to get metrics
 	server := c.Server
-
 	// // get System Data
 	sys, err := SetSystemHealthMetric(ch, server)
 	if err != nil {
 		return
 	}
-	// Set all Links
-
 	// Systems Storage start
 	// Systems Storage Collection Data
-	storeCollectionLink := fmt.Sprintf("%s%s", server, sys.Storage.ODataID)
+	storeCollectionLink := fmt.Sprintf("%s%s", server, sys.Oem.HPE.Links.SmartStorage.ODataID)
+	// fmt.Println(storeCollectionLink)
+	// store, err := SetStorageStatusMetric(ch, server, storeCollectionLink)
 	store, err := SetStorageStatusMetric(ch, server, storeCollectionLink)
 	if err != nil {
 		return
@@ -56,121 +50,117 @@ func (m Metrics) SystemsCollector(ch chan<- prometheus.Metric, c redfish.APIClie
 
 	// Systems Storage Disk start
 	// Set Systems Storage Disk metric
-	SetStorageDiskMetric(ch, server, *store)
-	// // Systems Storage Disk end
-
+	SetStorageDiskMetric(ch, server, store)
+	// Systems Storage Disk end
 	// Systems Ethernet Interfaces start
 	ethIfacesLink := fmt.Sprintf("%s%s", server, sys.EthernetInterfaces.ODataID)
 	SetEthernetMetric(ch, server, ethIfacesLink)
 	// Systems Ethernet Interfaces end
 
-	// storeVolumesLink := store.Volumes.ODataID
-
-	// Set system_health metric
-
-	// biosLink := sys.Bios.ODataID
-	// networkIfacesLink := sys.NetworkInterfaces.ODataID
-	// biosLink := sys.Bios.ODataID
-	// Set Metrics
+	// SetEthernetMetric(ch chan<- prometheus.Metric, server string, url string)
 }
+func SetStorageDiskMetric(ch chan<- prometheus.Metric, server string, store *StorageArrayController) {
+	diskCollection, err := GetDiskCollection(fmt.Sprintf("%s%s", server, store.Links.PhysicalDrives.ODataID))
+	if err != nil {
+		return
+	}
 
-func SetStorageDiskMetric(ch chan<- prometheus.Metric, server string, store Storage) {
-	for _, v := range store.Drives {
-		// TODO go routine start
+	// Using goroutine
+	// TODO go routine start
+	var diskURLs []string
+	for _, v := range diskCollection.Members {
 		diskURL := fmt.Sprintf("%s%s", server, v.ODataID)
-		// Get Systems Storage Disk Data
-		diskData, err := redfish.ClientDELL.Get(diskURL)
-		// Problem connect to server
-		if err != nil {
-			fmt.Println(diskURL)
-			fmt.Println(err.Error())
-			continue
-		}
-		var disk StorageDisk
-		err = json.Unmarshal(diskData, &disk)
-		// Data cannot convert StorageDisk struct
-		if err != nil {
-			fmt.Println(diskURL)
-			fmt.Println(err.Error())
-			continue
-		}
-		// TODO go routine end
+		diskURLs = append(diskURLs, diskURL)
+	}
+
+	// alochym := make(chan []byte)
+	disk := make(chan StorageDisk)
+
+	// Using goroutine
+	for _, diskURL := range diskURLs {
+		go GetDisk(diskURL, disk)
+		// go redfish.ClientHPE.GetUseGoRoutine(diskURL, alochym)
+	}
+	// TODO go routine end
+	for range diskURLs {
+		// var disk StorageDisk
+		// diskData := <-alochym
+		// err = json.Unmarshal(diskData, &disk)
+		// fmt.Println(disk.ODataID)
+		// // Check Disk is SSD
+		// if disk.SSDEnduranceUtilizationPercentage > 0 {
+		// 	ch <- prometheus.MustNewConstMetric(
+		// 		base.SysStorageDisk,
+		// 		prometheus.GaugeValue,
+		// 		(100.0 - disk.SSDEnduranceUtilizationPercentage),
+		// 		fmt.Sprintf("%s", disk.Id),
+		// 		fmt.Sprintf("%d", disk.CapacityMiB),
+		// 		disk.InterfaceType,
+		// 		disk.MediaType,
+		// 	)
+		// }
+		disk := <-disk
+		// err = json.Unmarshal(diskData, &disk)
+		// fmt.Println(disk.ODataID)
 		// Check Disk is SSD
-		if disk.PredictedMediaLifeLeftPercent > 0 {
-			// m.sysStorageDisk(ch, disk)
+		if disk.SSDEnduranceUtilizationPercentage > 0 {
 			ch <- prometheus.MustNewConstMetric(
 				base.SysStorageDisk,
 				prometheus.GaugeValue,
-				disk.PredictedMediaLifeLeftPercent,
+				(100.0 - disk.SSDEnduranceUtilizationPercentage),
 				fmt.Sprintf("%s", disk.Id),
-				fmt.Sprintf("%d", disk.CapacityBytes),
-				disk.Protocol,
+				fmt.Sprintf("%d", disk.CapacityMiB),
+				disk.InterfaceType,
 				disk.MediaType,
 			)
 		}
 	}
+
 	return
 }
 
-func SetStorageStatusMetric(ch chan<- prometheus.Metric, server string, url string) (*Storage, error) {
-	data, err := redfish.ClientDELL.Get(url)
+func GetDiskCollection(url string) (*SmartStorageDiskDriveCollection, error) {
+	var diskCollection SmartStorageDiskDriveCollection
+	// diskCollectionURL := fmt.Sprintf("%s%s", server, store.Links.PhysicalDrives.ODataID)
+	diskCollectionData, err := redfish.ClientHPE.Get(url)
 	// Problem connect to server
 	if err != nil {
 		fmt.Println(url)
 		fmt.Println(err.Error())
 		return nil, err
 	}
-	var storeCollection StorageCollection
-	err = json.Unmarshal(data, &storeCollection)
-	// Data cannot convert StorageCollection struct
+	err = json.Unmarshal(diskCollectionData, &diskCollection)
+	// Data cannot convert SmartStorageDiskDriveCollection struct
 	if err != nil {
 		fmt.Println(url)
 		fmt.Println(err.Error())
 		return nil, err
 	}
-	// Systems Storage Collection End
-
-	// Systems Storage Data start
-	// Set Systems Storage URL
-	var storeURL string
-	for _, v := range storeCollection.Members {
-		if strings.Contains(v.ODataID, "RAID") {
-			// storeURL = fmt.Sprintf("%s%s", redfish.ClientDELL.Host, v.ODataID)
-			storeURL = fmt.Sprintf("%s%s", server, v.ODataID)
-			break
-		}
-	}
-	// Get Systems Storage Data
-	storeData, err := redfish.ClientDELL.Get(storeURL)
-	// Problem connect to server
-	if err != nil {
-		fmt.Println(storeURL)
-		fmt.Println(err.Error())
-		return nil, err
-	}
-
-	var store Storage
-	err = json.Unmarshal(storeData, &store)
-	// Data cannot convert Storage struct
-	if err != nil {
-		fmt.Println(storeURL)
-		fmt.Println(err.Error())
-		return nil, err
-	}
-	// Set storage_status metric
-	ch <- prometheus.MustNewConstMetric(
-		base.SysStorageState,
-		prometheus.GaugeValue,
-		store.StatusToNumber(),
-	)
-	// m.sysStorageStatus(ch, store) // Systems Storage Data end
-	return &store, nil
+	return &diskCollection, nil
 }
 
+func GetDisk(url string, chym chan<- StorageDisk) {
+	data, err := redfish.ClientHPE.Get(url)
+	if err != nil {
+		fmt.Println(url)
+		fmt.Println(err.Error())
+		return
+	}
+	var disk StorageDisk
+	// diskData := <-alochym
+	err = json.Unmarshal(data, &disk)
+	if err != nil {
+		fmt.Println(url)
+		fmt.Println(err.Error())
+		return
+	}
+	chym <- disk
+	return
+}
 func SetSystemHealthMetric(ch chan<- prometheus.Metric, server string) (*Systems, error) {
 	var sysCollection SystemsCollection
 	sysCollectionURL := fmt.Sprintf("%s%s", server, "/redfish/v1/Systems")
-	data, err := redfish.ClientDELL.Get(sysCollectionURL)
+	data, err := redfish.ClientHPE.Get(sysCollectionURL)
 	// Problem connect to server
 	if err != nil {
 		fmt.Println(sysCollectionURL)
@@ -196,7 +186,7 @@ func SetSystemHealthMetric(ch chan<- prometheus.Metric, server string) (*Systems
 	}
 
 	// get System Data
-	sysData, err := redfish.ClientDELL.Get(sysURL)
+	sysData, err := redfish.ClientHPE.Get(sysURL)
 	// Problem connect to server
 	if err != nil {
 		fmt.Println(sysURL)
@@ -222,10 +212,84 @@ func SetSystemHealthMetric(ch chan<- prometheus.Metric, server string) (*Systems
 	)
 	return &sys, nil
 }
+func SetStorageStatusMetric(ch chan<- prometheus.Metric, server string, url string) (*StorageArrayController, error) {
+	data, err := redfish.ClientHPE.Get(url)
+	// Problem connect to server
+	if err != nil {
+		fmt.Println(url)
+		fmt.Println(err.Error())
+		return nil, err
+	}
+	var storeCollection StorageCollection
+	err = json.Unmarshal(data, &storeCollection)
+
+	// Data cannot convert StorageCollection struct
+	if err != nil {
+		fmt.Println(url)
+		fmt.Println(err.Error())
+		return nil, err
+	}
+	// Set storage_status metric
+	ch <- prometheus.MustNewConstMetric(
+		base.SysStorageState,
+		prometheus.GaugeValue,
+		storeCollection.StatusToNumber(),
+	)
+
+	// Systems Storage Data start
+	// Set Systems Storage Collection URL
+	var arrayControllerCollectionURL string
+	arrayControllerCollectionURL = fmt.Sprintf("%s%s", server, storeCollection.Links.ArrayControllers.ODataID)
+	// Get Systems Storage Data
+	arrayControllerCollectionData, err := redfish.ClientHPE.Get(arrayControllerCollectionURL)
+	// Problem connect to server
+	if err != nil {
+		fmt.Println(arrayControllerCollectionURL)
+		fmt.Println(err.Error())
+		return nil, err
+	}
+	var storeArrControllerCollection StorageArrayControllerCollection
+	err = json.Unmarshal(arrayControllerCollectionData, &storeArrControllerCollection)
+	// d, _ := json.MarshalIndent(storeArrControllerCollection, "", "    ")
+	// fmt.Println(string(d))
+	// Data cannot convert Storage struct
+	if err != nil {
+		fmt.Println(arrayControllerCollectionURL)
+		fmt.Println(err.Error())
+		return nil, err
+	}
+	// Systems Storage Collection End
+
+	// Systems Storage ArrayController Start
+	// Set Systems Storage ArrayController URL
+	var arrayControllerURL string
+	arrayControllerURL = fmt.Sprintf("%s%s", server, storeArrControllerCollection.Members[0].ODataID)
+	// Get Systems Storage Data
+	arrayControllerData, err := redfish.ClientHPE.Get(arrayControllerURL)
+	// Problem connect to server
+	if err != nil {
+		fmt.Println(arrayControllerURL)
+		fmt.Println(err.Error())
+		return nil, err
+	}
+
+	var storeArrController StorageArrayController
+	err = json.Unmarshal(arrayControllerData, &storeArrController)
+
+	// Data cannot convert Storage struct
+	if err != nil {
+		fmt.Println(arrayControllerURL)
+		fmt.Println(err.Error())
+		return nil, err
+	}
+
+	// m.sysStorageStatus(ch, store) // Systems Storage Data end
+	return &storeArrController, nil
+}
 
 func SetEthernetMetric(ch chan<- prometheus.Metric, server string, url string) {
 	// Systems Ethernet Interfaces Collection
-	data, err := redfish.ClientDELL.Get(url)
+	data, err := redfish.ClientHPE.Get(url)
 	if err != nil {
 		fmt.Println(url)
 		fmt.Println(err.Error())
@@ -239,28 +303,29 @@ func SetEthernetMetric(ch chan<- prometheus.Metric, server string, url string) {
 		fmt.Println(err.Error())
 		return
 	}
+
+	// // Using goroutine
+	// // TODO go routine start
 	// Systems Ethernet Interfaces Collection end
 	// Systems Ethernet Interfaces start
+	var ifURLs []string
 	for _, v := range ethIf.Members {
-		// TODO go routine start
 		ifURL := fmt.Sprintf("%s%s", server, v.ODataID)
-		// Get Ethernet Interfaces Data
-		ifData, err := redfish.ClientDELL.Get(ifURL)
-		// Problem connect to server
-		if err != nil {
-			fmt.Println(ifURL)
-			fmt.Println(err.Error())
-			continue
-		}
+		ifURLs = append(ifURLs, ifURL)
+	}
+
+	ifalochym := make(chan []byte)
+
+	// Using go routine
+	for _, ifURL := range ifURLs {
+		go redfish.ClientHPE.GetUseGoRoutine(ifURL, ifalochym)
+	}
+
+	// Get Ethernet Interfaces Data
+	for range ifURLs {
 		var iface EthernetInterface
+		ifData := <-ifalochym
 		err = json.Unmarshal(ifData, &iface)
-		// Data cannot convert EthernetInterface struct
-		if err != nil {
-			fmt.Println(ifURL)
-			fmt.Println(err.Error())
-			continue
-		}
-		// TODO go routine end
 		ch <- prometheus.MustNewConstMetric(
 			base.SysEthernetInterface,
 			prometheus.GaugeValue,
@@ -269,6 +334,8 @@ func SetEthernetMetric(ch chan<- prometheus.Metric, server string, url string) {
 			fmt.Sprintf("%d", iface.SpeedMbps),
 		)
 	}
+	// TODO go routine end
+	return
 }
 
 func (m Metrics) ChassisCollector(ch chan<- prometheus.Metric, c redfish.APIClient) {
@@ -293,7 +360,7 @@ func (m Metrics) ChassisCollector(ch chan<- prometheus.Metric, c redfish.APIClie
 
 func GetChassis(url string, server string) (*Chassis, error) {
 	var chasCollection ChassisCollection
-	dataCollection, err := redfish.ClientDELL.Get(url)
+	dataCollection, err := redfish.ClientHPE.Get(url)
 	// Problem connect to server
 	if err != nil {
 		fmt.Println(url)
@@ -314,14 +381,11 @@ func GetChassis(url string, server string) (*Chassis, error) {
 	// Set a chassis url
 	var chasURL string
 	for _, v := range chasCollection.Members {
-		if strings.Contains(v.ODataID, "System") {
-			chasURL = fmt.Sprintf("%s%s", server, v.ODataID)
-			break
-		}
+		chasURL = fmt.Sprintf("%s%s", server, v.ODataID)
 	}
 
 	// get Chassis Data
-	dataChassis, err := redfish.ClientDELL.Get(chasURL)
+	dataChassis, err := redfish.ClientHPE.Get(chasURL)
 	// Problem connect to server
 	if err != nil {
 		fmt.Println(chasURL)
@@ -344,7 +408,7 @@ func GetChassis(url string, server string) (*Chassis, error) {
 }
 
 func SetPowerMetrics(ch chan<- prometheus.Metric, url string) {
-	data, err := redfish.ClientDELL.Get(url)
+	data, err := redfish.ClientHPE.Get(url)
 	// Problem connect to server
 	if err != nil {
 		return

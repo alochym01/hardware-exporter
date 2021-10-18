@@ -1,0 +1,352 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#ComputerSystem.ComputerSystem",
+    "@odata.etag": "W/\"210DB6B8\"",
+    "@odata.id": "/redfish/v1/Systems/1/",
+    "@odata.type": "#ComputerSystem.v1_4_0.ComputerSystem",
+    "Actions": {
+        "#ComputerSystem.Reset": {
+            "ResetType@Redfish.AllowableValues": [
+                "On",
+                "ForceOff",
+                "GracefulShutdown",
+                "ForceRestart",
+                "Nmi",
+                "PushPowerButton"
+            ],
+            "target": "/redfish/v1/Systems/1/Actions/ComputerSystem.Reset/"
+        }
+    },
+    "AssetTag": "",
+    "Bios": {
+        "@odata.id": "/redfish/v1/systems/1/bios/"
+    },
+    "BiosVersion": "U32 v2.04 (04/18/2019)",
+    "Boot": {
+        "BootOptions": {
+            "@odata.id": "/redfish/v1/Systems/1/BootOptions/"
+        },
+        "BootOrder": [
+            "Boot001E",
+            "Boot0011",
+            "Boot000A",
+            "Boot000B",
+            "Boot000D",
+            "Boot000F",
+            "Boot000E",
+            "Boot0010",
+            "Boot0013",
+            "Boot0014",
+            "Boot0015",
+            "Boot0017",
+            "Boot0019",
+            "Boot001B",
+            "Boot0016",
+            "Boot001A",
+            "Boot0018",
+            "Boot001C",
+            "Boot000C"
+        ],
+        "BootSourceOverrideEnabled": "Disabled",
+        "BootSourceOverrideMode": "UEFI",
+        "BootSourceOverrideTarget": "None",
+        "BootSourceOverrideTarget@Redfish.AllowableValues": [
+            "None",
+            "Cd",
+            "Hdd",
+            "Usb",
+            "SDCard",
+            "Utilities",
+            "Diags",
+            "BiosSetup",
+            "Pxe",
+            "UefiShell",
+            "UefiHttp",
+            "UefiTarget"
+        ],
+        "UefiTargetBootSourceOverride": "None",
+        "UefiTargetBootSourceOverride@Redfish.AllowableValues": [
+            "HD(1,GPT,A8866D8D-517E-48C8-8BDB-A9F35333557C,0x800,0x64000)/\\EFI\\centos\\shimx64.efi",
+            "HD(2,GPT,0AF5A707-BBEB-4D8A-8016-D840C2516753,0x40800,0x7700000)/\\EFI\\Microsoft\\Boot\\bootmgfw.efi",
+            "UsbClass(0xFFFF,0xFFFF,0xFF,0xFF,0xFF)",
+            "PciRoot(0x0)/Pci(0x14,0x0)/USB(0x13,0x0)",
+            "PciRoot(0x0)/Pci(0x1C,0x0)/Pci(0x0,0x0)/MAC(8030E03A3CA0,0x1)/IPv4(0.0.0.0)/Uri()",
+            "PciRoot(0x0)/Pci(0x1C,0x0)/Pci(0x0,0x0)/MAC(8030E03A3CA0,0x1)/IPv4(0.0.0.0)",
+            "PciRoot(0x0)/Pci(0x1C,0x0)/Pci(0x0,0x0)/MAC(8030E03A3CA0,0x1)/IPv6(0000:0000:0000:0000:0000:0000:0000:0000)/Uri()",
+            "PciRoot(0x0)/Pci(0x1C,0x0)/Pci(0x0,0x0)/MAC(8030E03A3CA0,0x1)/IPv6(0000:0000:0000:0000:0000:0000:0000:0000)",
+            "PciRoot(0x3)/Pci(0x0,0x0)/Pci(0x0,0x0)/Scsi(0x2,0x4000)",
+            "PciRoot(0x3)/Pci(0x0,0x0)/Pci(0x0,0x0)/Scsi(0x3,0x4000)",
+            "PciRoot(0x1)/Pci(0x0,0x0)/Pci(0x0,0x0)/MAC(48DF378B50B0,0x1)/IPv4(0.0.0.0)/Uri()",
+            "PciRoot(0x1)/Pci(0x0,0x0)/Pci(0x0,0x0)/MAC(48DF378B50B0,0x1)/IPv4(0.0.0.0)",
+            "PciRoot(0x3)/Pci(0x2,0x0)/Pci(0x0,0x0)/MAC(98F2B30E804C,0x1)/IPv4(0.0.0.0)/Uri()",
+            "PciRoot(0x3)/Pci(0x2,0x0)/Pci(0x0,0x0)/MAC(98F2B30E804C,0x1)/IPv4(0.0.0.0)",
+            "PciRoot(0x1)/Pci(0x0,0x0)/Pci(0x0,0x0)/MAC(48DF378B50B0,0x1)/IPv6(0000:0000:0000:0000:0000:0000:0000:0000)/Uri()",
+            "PciRoot(0x3)/Pci(0x2,0x0)/Pci(0x0,0x0)/MAC(98F2B30E804C,0x1)/IPv6(0000:0000:0000:0000:0000:0000:0000:0000)/Uri()",
+            "PciRoot(0x1)/Pci(0x0,0x0)/Pci(0x0,0x0)/MAC(48DF378B50B0,0x1)/IPv6(0000:0000:0000:0000:0000:0000:0000:0000)",
+            "PciRoot(0x3)/Pci(0x2,0x0)/Pci(0x0,0x0)/MAC(98F2B30E804C,0x1)/IPv6(0000:0000:0000:0000:0000:0000:0000:0000)",
+            "PciRoot(0x3)/Pci(0x0,0x0)/Pci(0x0,0x0)/Scsi(0x0,0x0)"
+        ]
+    },
+    "EthernetInterfaces": {
+        "@odata.id": "/redfish/v1/Systems/1/EthernetInterfaces/"
+    },
+    "HostName": "localhost.localdomain",
+    "Id": "1",
+    "IndicatorLED": "Off",
+    "Links": {
+        "Chassis": [
+            {
+                "@odata.id": "/redfish/v1/Chassis/1/"
+            }
+        ],
+        "ManagedBy": [
+            {
+                "@odata.id": "/redfish/v1/Managers/1/"
+            }
+        ]
+    },
+    "LogServices": {
+        "@odata.id": "/redfish/v1/Systems/1/LogServices/"
+    },
+    "Manufacturer": "HPE",
+    "Memory": {
+        "@odata.id": "/redfish/v1/Systems/1/Memory/"
+    },
+    "MemoryDomains": {
+        "@odata.id": "/redfish/v1/Systems/1/MemoryDomains/"
+    },
+    "MemorySummary": {
+        "Status": {
+            "HealthRollup": "OK"
+        },
+        "TotalSystemMemoryGiB": 64,
+        "TotalSystemPersistentMemoryGiB": 0
+    },
+    "Model": "ProLiant DL360 Gen10",
+    "Name": "Computer System",
+    "NetworkInterfaces": {
+        "@odata.id": "/redfish/v1/Systems/1/NetworkInterfaces/"
+    },
+    "Oem": {
+        "Hpe": {
+            "@odata.context": "/redfish/v1/$metadata#HpeComputerSystemExt.HpeComputerSystemExt",
+            "@odata.type": "#HpeComputerSystemExt.v2_7_0.HpeComputerSystemExt",
+            "Actions": {
+                "#HpeComputerSystemExt.PowerButton": {
+                    "PushType@Redfish.AllowableValues": [
+                        "Press",
+                        "PressAndHold"
+                    ],
+                    "target": "/redfish/v1/Systems/1/Actions/Oem/Hpe/HpeComputerSystemExt.PowerButton/"
+                },
+                "#HpeComputerSystemExt.SecureSystemErase": {
+                    "target": "/redfish/v1/Systems/1/Actions/Oem/Hpe/HpeComputerSystemExt.SecureSystemErase/"
+                },
+                "#HpeComputerSystemExt.SystemReset": {
+                    "ResetType@Redfish.AllowableValues": [
+                        "ColdBoot",
+                        "AuxCycle"
+                    ],
+                    "target": "/redfish/v1/Systems/1/Actions/Oem/Hpe/HpeComputerSystemExt.SystemReset/"
+                }
+            },
+            "AggregateHealthStatus": {
+                "AgentlessManagementService": "Ready",
+                "BiosOrHardwareHealth": {
+                    "Status": {
+                        "Health": "OK"
+                    }
+                },
+                "FanRedundancy": "Redundant",
+                "Fans": {
+                    "Status": {
+                        "Health": "OK"
+                    }
+                },
+                "Memory": {
+                    "Status": {
+                        "Health": "OK"
+                    }
+                },
+                "Network": {
+                    "Status": {
+                        "Health": "Warning"
+                    }
+                },
+                "PowerSupplies": {
+                    "PowerSuppliesMismatch": false,
+                    "Status": {
+                        "Health": "OK"
+                    }
+                },
+                "PowerSupplyRedundancy": "Redundant",
+                "Processors": {
+                    "Status": {
+                        "Health": "OK"
+                    }
+                },
+                "SmartStorageBattery": {
+                    "Status": {
+                        "Health": "OK"
+                    }
+                },
+                "Storage": {
+                    "Status": {
+                        "Health": "OK"
+                    }
+                },
+                "Temperatures": {
+                    "Status": {
+                        "Health": "OK"
+                    }
+                }
+            },
+            "Bios": {
+                "Backup": {
+                    "Date": "04/18/2019",
+                    "Family": "U32",
+                    "VersionString": "U32 v2.04 (04/18/2019)"
+                },
+                "Current": {
+                    "Date": "04/18/2019",
+                    "Family": "U32",
+                    "VersionString": "U32 v2.04 (04/18/2019)"
+                },
+                "UefiClass": 2
+            },
+            "CurrentPowerOnTimeSeconds": null,
+            "DeviceDiscoveryComplete": {
+                "AMSDeviceDiscovery": "Complete",
+                "DeviceDiscovery": "vMainDeviceDiscoveryComplete",
+                "SmartArrayDiscovery": "Complete"
+            },
+            "ElapsedEraseTimeInMinutes": 0,
+            "EndOfPostDelaySeconds": null,
+            "EstimatedEraseTimeInMinutes": 0,
+            "HostOS": {
+                "OsName": "CentOS Linux",
+                "OsSysDescription": "Linux localhost.localdomain 3.10.0-957.21.3.el7.x86_64 #1 SMP Tue Jun 18 16:35:19 UTC 2019 x86_64",
+                "OsType": 51,
+                "OsVersion": "7"
+            },
+            "IntelligentProvisioningAlwaysOn": true,
+            "IntelligentProvisioningIndex": 9,
+            "IntelligentProvisioningLocation": "System Board",
+            "IntelligentProvisioningVersion": "3.30.213",
+            "IsColdBooting": false,
+            "Links": {
+                "EthernetInterfaces": {
+                    "@odata.id": "/redfish/v1/Systems/1/EthernetInterfaces/"
+                },
+                "NetworkAdapters": {
+                    "@odata.id": "/redfish/v1/Systems/1/BaseNetworkAdapters/"
+                },
+                "PCIDevices": {
+                    "@odata.id": "/redfish/v1/Systems/1/PCIDevices/"
+                },
+                "PCISlots": {
+                    "@odata.id": "/redfish/v1/Systems/1/PCISlots/"
+                },
+                "SmartStorage": {
+                    "@odata.id": "/redfish/v1/Systems/1/SmartStorage/"
+                },
+                "USBDevices": {
+                    "@odata.id": "/redfish/v1/Systems/1/USBDevices/"
+                },
+                "USBPorts": {
+                    "@odata.id": "/redfish/v1/Systems/1/USBPorts/"
+                },
+                "WorkloadPerformanceAdvisor": {
+                    "@odata.id": "/redfish/v1/Systems/1/WorkloadPerformanceAdvisor/"
+                }
+            },
+            "PCAPartNumber": "847479-002",
+            "PCASerialNumber": "PWUFL0ARHC8234",
+            "PostDiscoveryCompleteTimeStamp": null,
+            "PostDiscoveryMode": null,
+            "PostMode": null,
+            "PostState": "FinishedPost",
+            "PowerAllocationLimit": 1000,
+            "PowerAutoOn": "Restore",
+            "PowerOnDelay": "Minimum",
+            "PowerOnMinutes": 1058304,
+            "PowerRegulatorMode": "Dynamic",
+            "PowerRegulatorModesSupported": [
+                "OSControl",
+                "Dynamic",
+                "Max",
+                "Min"
+            ],
+            "ProcessorJitterControl": {
+                "ConfiguredFrequencyLimitMHz": 0,
+                "Mode": "Disabled"
+            },
+            "SMBIOS": {
+                "extref": "/smbios"
+            },
+            "ServerFQDN": "",
+            "SmartStorageConfig": [
+                {
+                    "@odata.id": "/redfish/v1/systems/1/smartstorageconfig/"
+                }
+            ],
+            "SystemROMAndiLOEraseComponentStatus": {
+                "BIOSSettingsEraseStatus": "Idle",
+                "iLOSettingsEraseStatus": "Idle"
+            },
+            "SystemROMAndiLOEraseStatus": "Idle",
+            "SystemUsage": {
+                "AvgCPU0Freq": 246,
+                "AvgCPU1Freq": 86,
+                "CPU0Power": 35,
+                "CPU1Power": 28,
+                "CPUICUtil": 0,
+                "CPUUtil": 5,
+                "IOBusUtil": 0,
+                "JitterCount": 264,
+                "MemoryBusUtil": 3
+            },
+            "UserDataEraseComponentStatus": {},
+            "UserDataEraseStatus": "Idle",
+            "VirtualProfile": "Inactive"
+        }
+    },
+    "PowerState": "On",
+    "ProcessorSummary": {
+        "Count": 2,
+        "Model": "Intel(R) Xeon(R) Silver 4116 CPU @ 2.10GHz",
+        "Status": {
+            "HealthRollup": "OK"
+        }
+    },
+    "Processors": {
+        "@odata.id": "/redfish/v1/Systems/1/Processors/"
+    },
+    "SKU": "867959-B21",
+    "SecureBoot": {
+        "@odata.id": "/redfish/v1/Systems/1/SecureBoot/"
+    },
+    "SerialNumber": "SGH924TT68",
+    "Status": {
+        "Health": "OK",
+        "HealthRollup": "OK",
+        "State": "Enabled"
+    },
+    "Storage": {
+        "@odata.id": "/redfish/v1/Systems/1/Storage/"
+    },
+    "SystemType": "Physical",
+    "TrustedModules": [
+        {
+            "Oem": {
+                "Hpe": {
+                    "@odata.context": "/redfish/v1/$metadata#HpeTrustedModuleExt.HpeTrustedModuleExt",
+                    "@odata.type": "#HpeTrustedModuleExt.v2_0_0.HpeTrustedModuleExt"
+                }
+            },
+            "Status": {
+                "State": "Absent"
+            }
+        }
+    ],
+    "UUID": "39373638-3935-4753-4839-323454543638"
+}
