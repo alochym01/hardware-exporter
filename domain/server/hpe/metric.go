@@ -77,31 +77,29 @@ func SetStorageDiskMetric(ch chan<- prometheus.Metric, server string, store *Sto
 		return
 	}
 
+	// Using goroutine
+	// TODO go routine start
+	var diskURLs []string
 	for _, v := range diskCollection.Members {
-		// TODO go routine start
 		diskURL := fmt.Sprintf("%s%s", server, v.ODataID)
+		diskURLs = append(diskURLs, diskURL)
 		// Get Systems Storage Disk Data
-		diskData, err := redfish.Client.Get(diskURL)
-		// Problem connect to server
-		if err != nil {
-			fmt.Println(diskURL)
-			fmt.Println(err.Error())
-			continue
-		}
+	}
+
+	alochym := make(chan []byte)
+
+	// Using goroutine
+	for _, diskURL := range diskURLs {
+		go redfish.Client.GetUseGoRoutine(diskURL, alochym)
+	}
+	// TODO go routine end
+	for range diskURLs {
 		var disk StorageDisk
+		diskData := <-alochym
 		err = json.Unmarshal(diskData, &disk)
-		// Data cannot convert StorageDisk struct
-		if err != nil {
-			fmt.Println(diskURL)
-			fmt.Println(err.Error())
-			continue
-		}
-		// d, _ := json.MarshalIndent(disk, "", "    ")
-		// fmt.Println(string(d))
-		// TODO go routine end
+		fmt.Println(disk.ODataID)
 		// Check Disk is SSD
 		if disk.SSDEnduranceUtilizationPercentage > 0 {
-			// m.sysStorageDisk(ch, disk)
 			ch <- prometheus.MustNewConstMetric(
 				base.SysStorageDisk,
 				prometheus.GaugeValue,
@@ -113,6 +111,7 @@ func SetStorageDiskMetric(ch chan<- prometheus.Metric, server string, store *Sto
 			)
 		}
 	}
+
 	return
 }
 func SetSystemHealthMetric(ch chan<- prometheus.Metric, server string) (*Systems, error) {
@@ -262,28 +261,30 @@ func SetEthernetMetric(ch chan<- prometheus.Metric, server string, url string) {
 		fmt.Println(err.Error())
 		return
 	}
+
+	// // Using goroutine
+	// // TODO go routine start
 	// Systems Ethernet Interfaces Collection end
 	// Systems Ethernet Interfaces start
+	var ifURLs []string
 	for _, v := range ethIf.Members {
-		// TODO go routine start
 		ifURL := fmt.Sprintf("%s%s", server, v.ODataID)
-		// Get Ethernet Interfaces Data
-		ifData, err := redfish.Client.Get(ifURL)
-		// Problem connect to server
-		if err != nil {
-			fmt.Println(ifURL)
-			fmt.Println(err.Error())
-			continue
-		}
+		ifURLs = append(ifURLs, ifURL)
+	}
+
+	ifalochym := make(chan []byte)
+
+	// Using go routine
+	for _, ifURL := range ifURLs {
+		go redfish.Client.GetUseGoRoutine(ifURL, ifalochym)
+	}
+
+	// Get Ethernet Interfaces Data
+	for range ifURLs {
 		var iface EthernetInterface
+		ifData := <-ifalochym
 		err = json.Unmarshal(ifData, &iface)
-		// Data cannot convert EthernetInterface struct
-		if err != nil {
-			fmt.Println(ifURL)
-			fmt.Println(err.Error())
-			continue
-		}
-		// TODO go routine end
+		fmt.Println(iface.ODataID)
 		ch <- prometheus.MustNewConstMetric(
 			base.SysEthernetInterface,
 			prometheus.GaugeValue,
@@ -292,6 +293,8 @@ func SetEthernetMetric(ch chan<- prometheus.Metric, server string, url string) {
 			fmt.Sprintf("%d", iface.SpeedMbps),
 		)
 	}
+	// TODO go routine end
+	return
 }
 
 func (m Metrics) ChassisCollector(ch chan<- prometheus.Metric, c redfish.APIClient) {

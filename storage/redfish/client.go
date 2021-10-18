@@ -40,6 +40,27 @@ func (c APIClient) Get(url string) ([]byte, error) {
 	return data, nil
 }
 
+// Get ....
+func (c APIClient) GetUseGoRoutine(url string, ch chan<- []byte) {
+	// Make a http request
+	res, err := c.fetch(url)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	// Close http.Request connection
+	defer res.Body.Close()
+
+	// read the whole body into a []bytes
+	data, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	ch <- data
+	return
+}
+
 func (c APIClient) fetch(url string) (*http.Response, error) {
 	// Create a new request
 	fmt.Println("Storage URL -- ", url)

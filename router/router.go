@@ -15,8 +15,10 @@ func Router(ginMode string) *gin.Engine {
 
 	gin.SetMode(ginMode)
 
-	dellHandler := server.NewDellHandler()
-	router.GET("/metrics", dellHandler.Metric)
+	// dellHandler := server.NewDellHandler()
+	// router.GET("/metrics", dellHandler.Metric)
+	hpeHandler := server.NewHPEHandler()
+	router.GET("/metrics", hpeHandler.Metric)
 
 	return router
 }
