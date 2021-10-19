@@ -45,8 +45,9 @@ func (handler HPEHandler) Metric(c *gin.Context) {
 	// Register Server Dell Metrics
 	// Using custom registry
 	registry := prometheus.NewRegistry()
-	// dellMetrics := dell.NewMetrics()
-	server := hpe.NewMetrics()
+
+	// server := hpe.NewMetrics()
+	server := hpe.NewMetricsV1()
 	registry.MustRegister(server)
 
 	// Make promhttp response to Request

@@ -1,4 +1,10 @@
 # hardware-exporter
+## How to code
+1. reference redfish link for dell server
+    1. https://github.com/dell/iDRAC-Redfish-Scripting
+1. reference redfish link for hpe server
+    1. hpe-redfish-resorucedirectory.json
+## Metrics
 - hpilo_agentless_management_service_status
 - hpilo_array_controller_status
 - hpilo_avgcpu0freq
@@ -62,12 +68,12 @@
 - hpilo_network_adapter_status
 - hpilo_network_port_status
 - hpilo_networks_status
-- 	SysEthernetInterface = prometheus.NewDesc(
-		"ethernet_port",
-		"ethernet_port {0: LinkUp, 2: LinkDown}",
-		[]string{"id", "speed"},
-		nil,
-	)
+-     SysEthernetInterface = prometheus.NewDesc(
+        "ethernet_port",
+        "ethernet_port {0: LinkUp, 2: LinkDown}",
+        []string{"id", "speed"},
+        nil,
+    )
 
 - hpilo_smart_storage_batteries_status
 - hpilo_smart_storage_battery_charge_level_percent
@@ -81,12 +87,12 @@
 - hpilo_physical_drive_status
 - hpilo_physical_drive_uncorrected_read_errors
 - hpilo_physical_drive_uncorrected_write_errors
-- 	SysStorageDisk = prometheus.NewDesc(
-		"storage_drive_ssd_endurance",
-		"storage_drive_ssd_endurance {100: OK, 50: Warning, 20: Critical}",
-		[]string{"id", "capacity", "interface_type", "media_type"},
-		nil,
-	)
+-     SysStorageDisk = prometheus.NewDesc(
+        "storage_drive_ssd_endurance",
+        "storage_drive_ssd_endurance {100: OK, 50: Warning, 20: Critical}",
+        []string{"id", "capacity", "interface_type", "media_type"},
+        nil,
+    )
 
 - hpilo_power_consumed_by_all
 - hpilo_power_consumed_by_each

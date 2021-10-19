@@ -98,12 +98,14 @@ func SetStorageDiskMetric(ch chan<- prometheus.Metric, server string, store Stor
 		// Check Disk is SSD
 		if disk.PredictedMediaLifeLeftPercent > 0 {
 			// m.sysStorageDisk(ch, disk)
+			enclosure := strings.Split(disk.Id, ".")[2]
+			id := strings.Split(enclosure, ":")[0]
 			ch <- prometheus.MustNewConstMetric(
 				base.SysStorageDisk,
 				prometheus.GaugeValue,
 				disk.PredictedMediaLifeLeftPercent,
-				fmt.Sprintf("%s", disk.Id),
-				fmt.Sprintf("%d", disk.CapacityBytes),
+				fmt.Sprintf("%s", id),
+				fmt.Sprintf("%d", disk.CapacityBytes/1000000000),
 				disk.Protocol,
 				disk.MediaType,
 			)

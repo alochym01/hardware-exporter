@@ -1,6 +1,8 @@
 package router
 
 import (
+	"strings"
+
 	"github.com/alochym01/hardware-exporter/domain/server"
 	"github.com/alochym01/hardware-exporter/storage/redfish"
 	"github.com/gin-gonic/gin"
@@ -14,7 +16,9 @@ func Router(ginMode string) *gin.Engine {
 
 	router := gin.Default()
 
-	gin.SetMode(ginMode)
+	if strings.Contains(ginMode, "release") {
+		gin.SetMode(gin.ReleaseMode)
+	}
 
 	dellHandler := server.NewDellHandler()
 	router.GET("/metrics/dell", dellHandler.Metric)

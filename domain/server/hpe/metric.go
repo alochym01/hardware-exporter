@@ -83,25 +83,7 @@ func SetStorageDiskMetric(ch chan<- prometheus.Metric, server string, store *Sto
 	}
 	// TODO go routine end
 	for range diskURLs {
-		// var disk StorageDisk
-		// diskData := <-alochym
-		// err = json.Unmarshal(diskData, &disk)
-		// fmt.Println(disk.ODataID)
-		// // Check Disk is SSD
-		// if disk.SSDEnduranceUtilizationPercentage > 0 {
-		// 	ch <- prometheus.MustNewConstMetric(
-		// 		base.SysStorageDisk,
-		// 		prometheus.GaugeValue,
-		// 		(100.0 - disk.SSDEnduranceUtilizationPercentage),
-		// 		fmt.Sprintf("%s", disk.Id),
-		// 		fmt.Sprintf("%d", disk.CapacityMiB),
-		// 		disk.InterfaceType,
-		// 		disk.MediaType,
-		// 	)
-		// }
 		disk := <-disk
-		// err = json.Unmarshal(diskData, &disk)
-		// fmt.Println(disk.ODataID)
 		// Check Disk is SSD
 		if disk.SSDEnduranceUtilizationPercentage > 0 {
 			ch <- prometheus.MustNewConstMetric(
