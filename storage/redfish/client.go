@@ -99,7 +99,7 @@ func NewAPIClient(user, pass string) *APIClient {
 		Pass: pass,
 		HTTPClient: &http.Client{
 			Transport: transport,
-			Timeout:   time.Duration(10) * time.Second,
+			Timeout:   time.Duration(15) * time.Second,
 		},
 		Server: "",
 	}
