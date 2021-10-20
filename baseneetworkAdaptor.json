@@ -1,0 +1,86 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#HpeBaseNetworkAdapter.HpeBaseNetworkAdapter",
+    "@odata.etag": "W/\"9F346C52\"",
+    "@odata.id": "/redfish/v1/Systems/1/BaseNetworkAdapters/1",
+    "@odata.type": "#HpeBaseNetworkAdapter.v2_0_0.HpeBaseNetworkAdapter",
+    "FcPorts": [],
+    "Firmware": {
+        "Current": {
+            "VersionString": "10.4.3"
+        }
+    },
+    "Id": "1",
+    "Name": "HPE Ethernet 10Gb 2-port 562SFP+ Adapter",
+    "PartNumber": "790361-001",
+    "PhysicalPorts": [
+        {
+            "FullDuplex": true,
+            "IPv4Addresses": [
+                {
+                    "Address": "42.118.242.131"
+                }
+            ],
+            "IPv6Addresses": [
+                {
+                    "Address": "fe80::4adf:37ff:fe8b:4340/64"
+                }
+            ],
+            "LinkStatus": "LinkUp",
+            "MacAddress": "48:df:37:8b:43:40",
+            "Name": "bond0",
+            "Oem": {
+                "Hpe": {
+                    "@odata.context": "/redfish/v1/$metadata#HpeBaseNetworkAdapterExt.HpeBaseNetworkAdapterExt",
+                    "@odata.type": "#HpeBaseNetworkAdapterExt.v2_0_0.HpeBaseNetworkAdapterExt",
+                    "BadReceives": 0,
+                    "BadTransmits": 0,
+                    "GoodReceives": -195532230,
+                    "GoodTransmits": -692575084,
+                    "Team": "bond0"
+                }
+            },
+            "SpeedMbps": 10000,
+            "Status": {
+                "Health": "OK"
+            }
+        },
+        {
+            "FullDuplex": true,
+            "IPv4Addresses": [
+                {
+                    "Address": "42.118.242.131"
+                }
+            ],
+            "IPv6Addresses": [
+                {
+                    "Address": "fe80::4adf:37ff:fe8b:4340/64"
+                }
+            ],
+            "LinkStatus": "LinkUp",
+            "MacAddress": "48:df:37:8b:43:48",
+            "Name": "bond0",
+            "Oem": {
+                "Hpe": {
+                    "@odata.context": "/redfish/v1/$metadata#HpeBaseNetworkAdapterExt.HpeBaseNetworkAdapterExt",
+                    "@odata.type": "#HpeBaseNetworkAdapterExt.v2_0_0.HpeBaseNetworkAdapterExt",
+                    "BadReceives": 0,
+                    "BadTransmits": 0,
+                    "GoodReceives": 87955512,
+                    "GoodTransmits": 69544526,
+                    "Team": "bond0"
+                }
+            },
+            "SpeedMbps": 10000,
+            "Status": {
+                "Health": "OK"
+            }
+        }
+    ],
+    "SerialNumber": "MYI91905J6",
+    "Status": {
+        "Health": "OK",
+        "State": "Enabled"
+    },
+    "StructuredName": "NIC.Slot.1.1",
+    "UEFIDevicePath": "PciRoot(0x1)/Pci(0x0,0x0)/Pci(0x0,0x0)"
+}

@@ -31,7 +31,7 @@ var (
 	SysEthernetInterface = prometheus.NewDesc(
 		"ethernet_port",
 		"ethernet_port {0: LinkUp, 2: LinkDown}",
-		[]string{"id", "speed"},
+		[]string{"id", "mac", "speed"},
 		nil,
 	)
 

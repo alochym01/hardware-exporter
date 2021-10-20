@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"strings"
+	"sync"
 
 	"github.com/alochym01/hardware-exporter/domain/server/base"
 	"github.com/alochym01/hardware-exporter/storage/redfish"
@@ -28,6 +29,9 @@ func (m MetricsV1) Describe(ch chan<- *prometheus.Desc) {
 }
 
 func (m MetricsV1) Collect(ch chan<- prometheus.Metric) {
+	var mu sync.Mutex
+	mu.Lock()
+
 	// clientHPE:=
 	server := redfish.ClientHPE.Server
 	// Get all Redfish Link
@@ -40,6 +44,8 @@ func (m MetricsV1) Collect(ch chan<- prometheus.Metric) {
 	}
 
 	err = json.Unmarshal(data, &rfLinks)
+	mu.Unlock()
+
 	// Data cannot convert ChassisCollection struct
 	if err != nil {
 		fmt.Println(redfishLinks)
@@ -47,13 +53,33 @@ func (m MetricsV1) Collect(ch chan<- prometheus.Metric) {
 		ch <- prometheus.MustNewConstMetric(base.SysState, prometheus.GaugeValue, 2.0, "", "")
 		return
 	}
-
+	// redfishLinks := fmt.Sprintf("%s%s", server, "/redfish/v1/resourcedirectory")
+	// rd, err := getResourceDirectory(redfishLinks)
+	// if err != nil {
+	// 	fmt.Println(redfishLinks)
+	// 	ch <- prometheus.MustNewConstMetric(base.SysState, prometheus.GaugeValue, 2.0, "", "")
+	// 	return
+	// }
+	// rfLinks = rd
 	// System Metrics
 	m.SystemsCollector(ch, redfish.ClientHPE, server)
 	// Chassis Metrics
 	m.ChassisCollector(ch, redfish.ClientHPE, server)
 }
 
+// func getResourceDirectory(url string) (*RedfishLinks, error) {
+// 	data, err := redfish.ClientHPE.Get(url)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	var rf RedfishLinks
+// 	err = json.Unmarshal(data, &rf)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	return &rf, nil
+
+// }
 func (m MetricsV1) SystemsCollector(ch chan<- prometheus.Metric, c redfish.APIClient, server string) {
 	SetSystemHealthMetricsV1(ch, rfLinks, server)
 	// DiskDrive.
@@ -138,8 +164,8 @@ func SetStorageDiskMetricsV1(ch chan<- prometheus.Metric, sysLink *RedfishLinks,
 }
 
 func SetEthernetMetricsV1(ch chan<- prometheus.Metric, sysLink *RedfishLinks, server string) {
-	// Systems Ethernet Interfaces Collection
-	ifURLs := findObject(sysLink.Instances, "EthernetInterface.", server)
+	// Systems BaseNetworkAdapters
+	ifURLs := findObject(sysLink.Instances, "BaseNetworkAdapter.", server)
 	// // Using goroutine
 	// // TODO go routine start
 	// Systems Ethernet Interfaces Collection end
@@ -153,16 +179,19 @@ func SetEthernetMetricsV1(ch chan<- prometheus.Metric, sysLink *RedfishLinks, se
 
 	// Get Ethernet Interfaces Data
 	for range ifURLs {
-		var iface EthernetInterface
+		var iface BaseNetworkAdapters
 		ifData := <-ifalochym
 		json.Unmarshal(ifData, &iface)
-		ch <- prometheus.MustNewConstMetric(
-			base.SysEthernetInterface,
-			prometheus.GaugeValue,
-			iface.PortStatus(),
-			iface.MACAddress,
-			fmt.Sprintf("%d", iface.SpeedMbps),
-		)
+		for _, v := range iface.PhysicalPorts {
+			ch <- prometheus.MustNewConstMetric(
+				base.SysEthernetInterface,
+				prometheus.GaugeValue,
+				v.PortStatus(),
+				iface.Id,
+				v.MacAddress,
+				fmt.Sprintf("%d", v.SpeedMbps),
+			)
+		}
 	}
 	// TODO go routine end
 	return
@@ -219,6 +248,10 @@ func findObject(ob []RedfishLinksInstances, obType string, server string) []stri
 			// fmt.Println(url)
 			l = append(l, url)
 		} else if strings.Contains(ob[i].OdataType, obType) && obType == "DiskDrive." {
+			url := fmt.Sprintf("%s%s", server, ob[i].ODataID)
+			// fmt.Println(url)
+			l = append(l, url)
+		} else if strings.Contains(ob[i].OdataType, obType) && obType == "BaseNetworkAdapter." {
 			url := fmt.Sprintf("%s%s", server, ob[i].ODataID)
 			// fmt.Println(url)
 			l = append(l, url)

@@ -2,6 +2,34 @@ package hpe
 
 import "github.com/alochym01/hardware-exporter/domain/server/base"
 
+type BaseNetworkAdaptersPhysicalPorts struct {
+	FullDuplex bool   `json:"FullDuplex"`
+	LinkStatus string `json:"LinkStatus"`
+	MacAddress string `json:"MacAddress"`
+	Name       string `json:"Name"`
+	SpeedMbps  int    `json:"SpeedMbps"`
+	Status     base.HealthStatus
+}
+type BaseNetworkAdapters struct {
+	base.Meta
+	Id             string `json:"Id"`
+	Name           string `json:"Name"`
+	PartNumber     string `json:"PartNumber"`
+	PhysicalPorts  []BaseNetworkAdaptersPhysicalPorts
+	SerialNumber   string `json:"SerialNumber"`
+	Status         base.StateStatus
+	StructuredName string `json:"StructuredName"`
+}
+
+func (b BaseNetworkAdaptersPhysicalPorts) PortStatus() float64 {
+	switch b.SpeedMbps {
+	case 0:
+		return 2.0
+	default:
+		return 0.0
+	}
+}
+
 type EthernetInterfaceCollection struct {
 	base.Meta
 	Description       string `json:"Description"`

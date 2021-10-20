@@ -267,6 +267,7 @@ func SetEthernetMetric(ch chan<- prometheus.Metric, server string, url string) {
 			base.SysEthernetInterface,
 			prometheus.GaugeValue,
 			iface.PortStatus(),
+			iface.Id,
 			iface.MACAddress,
 			fmt.Sprintf("%d", iface.SpeedMbps),
 		)
