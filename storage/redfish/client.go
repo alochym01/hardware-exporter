@@ -8,8 +8,8 @@ import (
 	"time"
 )
 
-var ClientHPE *APIClient
-var ClientDELL *APIClient
+var ClientHPE APIClient
+var ClientDELL APIClient
 
 // var Client APIClient
 
@@ -80,7 +80,7 @@ func (c APIClient) fetch(url string) (*http.Response, error) {
 }
 
 // NewAPIClient return a APIClient struct
-func NewAPIClient(user, pass string) *APIClient {
+func NewAPIClient(user, pass string) APIClient {
 	// Create a custom Transport
 	// The default value of Transport's MaxIdleConnsPerHost.
 	// const DefaultMaxIdleConnsPerHost = 2
@@ -94,7 +94,7 @@ func NewAPIClient(user, pass string) *APIClient {
 		InsecureSkipVerify: true,
 	}
 	// Can set User/Pass from CLI
-	return &APIClient{
+	return APIClient{
 		User: user,
 		Pass: pass,
 		HTTPClient: &http.Client{

@@ -28,6 +28,7 @@ func (m MetricsV1) Describe(ch chan<- *prometheus.Desc) {
 }
 
 func (m MetricsV1) Collect(ch chan<- prometheus.Metric) {
+	// clientHPE:=
 	server := redfish.ClientHPE.Server
 	// Get all Redfish Link
 	redfishLinks := fmt.Sprintf("%s%s", server, "/redfish/v1/resourcedirectory")
@@ -48,9 +49,9 @@ func (m MetricsV1) Collect(ch chan<- prometheus.Metric) {
 	}
 
 	// System Metrics
-	m.SystemsCollector(ch, *redfish.ClientHPE, server)
+	m.SystemsCollector(ch, redfish.ClientHPE, server)
 	// Chassis Metrics
-	m.ChassisCollector(ch, *redfish.ClientHPE, server)
+	m.ChassisCollector(ch, redfish.ClientHPE, server)
 }
 
 func (m MetricsV1) SystemsCollector(ch chan<- prometheus.Metric, c redfish.APIClient, server string) {

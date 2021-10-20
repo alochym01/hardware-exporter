@@ -21,9 +21,9 @@ func (m Metrics) Describe(ch chan<- *prometheus.Desc) {
 }
 func (m Metrics) Collect(ch chan<- prometheus.Metric) {
 	// System Metrics
-	m.SystemsCollector(ch, *redfish.ClientHPE)
+	m.SystemsCollector(ch, redfish.ClientHPE)
 	// Chassis Metrics
-	m.ChassisCollector(ch, *redfish.ClientHPE)
+	m.ChassisCollector(ch, redfish.ClientHPE)
 }
 
 // NewMetrics return a Metrics struct
